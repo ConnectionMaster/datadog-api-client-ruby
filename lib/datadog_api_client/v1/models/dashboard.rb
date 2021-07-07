@@ -42,6 +42,11 @@ module DatadogAPIClient::V1
     # List of handles of users to notify when changes are made to this dashboard.
     attr_accessor :notify_list
 
+    attr_accessor :reflow_type
+
+    # A list of role identifiers. Only the author and users associated with at least one of these roles can edit this dashboard. Overrides the `is_read_only` property if both are present. **This feature is currently in beta.**
+    attr_accessor :restricted_roles
+
     # Array of template variables saved views.
     attr_accessor :template_variable_presets
 
@@ -68,6 +73,8 @@ module DatadogAPIClient::V1
         :'layout_type' => :'layout_type',
         :'modified_at' => :'modified_at',
         :'notify_list' => :'notify_list',
+        :'reflow_type' => :'reflow_type',
+        :'restricted_roles' => :'restricted_roles',
         :'template_variable_presets' => :'template_variable_presets',
         :'template_variables' => :'template_variables',
         :'title' => :'title',
@@ -92,8 +99,10 @@ module DatadogAPIClient::V1
         :'layout_type' => :'DashboardLayoutType',
         :'modified_at' => :'Time',
         :'notify_list' => :'Array<String>',
+        :'reflow_type' => :'DashboardReflowType',
+        :'restricted_roles' => :'Array<String>',
         :'template_variable_presets' => :'Array<DashboardTemplateVariablePreset>',
-        :'template_variables' => :'Array<DashboardTemplateVariables>',
+        :'template_variables' => :'Array<DashboardTemplateVariable>',
         :'title' => :'String',
         :'url' => :'String',
         :'widgets' => :'Array<Widget>'
@@ -158,6 +167,16 @@ module DatadogAPIClient::V1
       if attributes.key?(:'notify_list')
         if (value = attributes[:'notify_list']).is_a?(Array)
           self.notify_list = value
+        end
+      end
+
+      if attributes.key?(:'reflow_type')
+        self.reflow_type = attributes[:'reflow_type']
+      end
+
+      if attributes.key?(:'restricted_roles')
+        if (value = attributes[:'restricted_roles']).is_a?(Array)
+          self.restricted_roles = value
         end
       end
 
@@ -229,6 +248,8 @@ module DatadogAPIClient::V1
           layout_type == o.layout_type &&
           modified_at == o.modified_at &&
           notify_list == o.notify_list &&
+          reflow_type == o.reflow_type &&
+          restricted_roles == o.restricted_roles &&
           template_variable_presets == o.template_variable_presets &&
           template_variables == o.template_variables &&
           title == o.title &&
@@ -245,7 +266,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [author_handle, created_at, description, id, is_read_only, layout_type, modified_at, notify_list, template_variable_presets, template_variables, title, url, widgets].hash
+      [author_handle, created_at, description, id, is_read_only, layout_type, modified_at, notify_list, reflow_type, restricted_roles, template_variable_presets, template_variables, title, url, widgets].hash
     end
 
     # Builds the object from hash
@@ -301,6 +322,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

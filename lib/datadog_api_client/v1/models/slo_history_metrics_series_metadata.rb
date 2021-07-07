@@ -34,7 +34,7 @@ module DatadogAPIClient::V1
     # Query scope.
     attr_accessor :scope
 
-    # Query units (if available).
+    # An array of metric units that contains up to two unit objects. For example, bytes represents one unit object and bytes per second represents two unit objects. If a metric query only has one unit object, the second array element is null.
     attr_accessor :unit
 
     # Attribute mapping from ruby-style variable name to JSON key.
@@ -62,13 +62,14 @@ module DatadogAPIClient::V1
         :'metric' => :'String',
         :'query_index' => :'Integer',
         :'scope' => :'String',
-        :'unit' => :'String'
+        :'unit' => :'Array<SLOHistoryMetricsSeriesMetadataUnit>'
       }
     end
 
     # List of attributes with nullable: true
     def self.openapi_nullable
       Set.new([
+        :'unit'
       ])
     end
 
@@ -108,7 +109,9 @@ module DatadogAPIClient::V1
       end
 
       if attributes.key?(:'unit')
-        self.unit = attributes[:'unit']
+        if (value = attributes[:'unit']).is_a?(Array)
+          self.unit = value
+        end
       end
     end
 
@@ -203,6 +206,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

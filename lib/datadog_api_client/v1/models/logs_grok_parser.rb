@@ -126,6 +126,10 @@ module DatadogAPIClient::V1
         invalid_properties.push('invalid value for "grok", grok cannot be nil.')
       end
 
+      if !@samples.nil? && @samples.length > 5
+        invalid_properties.push('invalid value for "samples", number of items must be less than or equal to 5.')
+      end
+
       if @source.nil?
         invalid_properties.push('invalid value for "source", source cannot be nil.')
       end
@@ -141,9 +145,20 @@ module DatadogAPIClient::V1
     # @return true if the model is valid
     def valid?
       return false if @grok.nil?
+      return false if !@samples.nil? && @samples.length > 5
       return false if @source.nil?
       return false if @type.nil?
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] samples Value to be assigned
+    def samples=(samples)
+      if !samples.nil? && samples.length > 5
+        fail ArgumentError, 'invalid value for "samples", number of items must be less than or equal to 5.'
+      end
+
+      @samples = samples
     end
 
     # Checks equality by comparing each attribute.
@@ -224,6 +239,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

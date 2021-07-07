@@ -1,4 +1,5 @@
 require 'json'
+require 'active_support/time'
 
 module APIWorld
   def api
@@ -6,25 +7,76 @@ module APIWorld
   end
 
   def configuration
-    @configuration ||= api.const_get("Configuration").new
+    @configuration ||= from_env(api::Configuration.new)
+  end
+
+  def from_env(configuration)
+    configuration.configure do |c|
+      if ENV.key? 'DD_TEST_SITE' then
+        c.server_index = 2
+        c.server_variables[:site] = ENV['DD_TEST_SITE']
+      end
+    end
+    configuration
   end
 
   def api_client
-    @api_client ||= api.const_get("ApiClient").new configuration
+    @api_client ||= api::APIClient.new configuration
   end
 
   def api_error
-    api.const_get("ApiError")
+    api::APIError
   end
 
   def unique
     now = Time.now
     scenario_name = @scenario.name.gsub(/[^A-Za-z0-9]+/, '_')[0..100]
-    @unique ||= "ruby-#{scenario_name}-#{now.to_i}"
+    prefix = ENV["RECORD"] == "none" ? "Test-Ruby" : "Test"
+    @unique ||= "#{prefix}-#{scenario_name}-#{now.to_i}"
   end
 
   def fixtures
-    @fixtures ||= { "unique": unique, "unique_lower": unique.downcase }
+    u = unique
+    alnum = u.gsub(/[^A-Za-z0-9]+/, '')
+    @fixtures ||= {
+      "unique": u,
+      "unique_lower": u.downcase,
+      "unique_alnum": alnum,
+      "unique_lower_alnum": alnum.downcase,
+      "timestamp": relative_time(false),
+      "timeISO": relative_time(true),
+    }
+  end
+
+  def relative_time(iso)
+    time_re = /now( *([+-]) *(\d+)([smhdMy]))?/
+    lambda { |arg|
+      ret = Time.now
+      m = arg.match time_re
+      if m
+        if m[1]
+          num = (m[2] + m[3]).to_i
+          unit = m[4]
+          case unit
+          when "s"
+            ret += num.second
+          when "m"
+            ret += num.minute
+          when "h"
+            ret += num.hour
+          when "d"
+            ret += num.day
+          when "M"
+            ret += num.month
+          when "y"
+            ret += num.year
+          end
+        end
+        return ret.iso8601 if iso
+        return ret.to_i
+      end
+      return nil
+    }
   end
 
   def opts
@@ -52,9 +104,17 @@ module APIWorld
     method = api_instance.method("#{operation_name}_with_http_info".to_sym)
 
     lambda do |response|
-      args = operation["parameters"].map{ |p| response.lookup(p["source"]) }
+      args = operation["parameters"].map do |p|
+        if p["source"]
+          response.lookup(p["source"])
+        elsif p["template"]
+          p["template"].templated response
+        end
+      end
 
-      api_instance.api_client.config.unstable_operations[operation_name.to_sym] = true
+      if api_instance.api_client.config.unstable_operations.has_key?(operation_name.to_sym)
+        api_instance.api_client.config.unstable_operations[operation_name.to_sym] = true
+      end
       lambda { method.call(*args) }
     end
   end
@@ -65,18 +125,22 @@ module APIWorld
 
     # make sure we have a fresh instance of API client and configuration
     given_api = Object.const_get("DatadogAPIClient::V#{api_version}")
-    given_configuration = given_api.const_get("Configuration").new
-    given_configuration.api_key['apiKeyAuth'] = ENV["DD_TEST_CLIENT_API_KEY"]
-    given_configuration.api_key['appKeyAuth'] = ENV["DD_TEST_CLIENT_APP_KEY"]
-    given_api_client = given_api.const_get("ApiClient").new given_configuration
-    given_api_instance = api.const_get("#{api_name}Api").new given_api_client
+    given_configuration = from_env(given_api::Configuration.new)
+    given_configuration.api_key = ENV["DD_TEST_CLIENT_API_KEY"]
+    given_configuration.application_key = ENV["DD_TEST_CLIENT_APP_KEY"]
+    Kernel.puts given_configuration.inspect
+    Kernel.puts given_configuration.base_url
+    given_api_client = given_api::APIClient.new given_configuration
+    given_api_instance = api.const_get("#{api_name}API").new given_api_client
     method = given_api_instance.method("#{operation_name}_with_http_info".to_sym)
 
     # find undo method
     undo_builder = build_undo_for(operation_name, given_api_instance)
 
     # enable unstable operation
-    given_configuration.unstable_operations[operation_name.to_sym] = true
+    if given_configuration.unstable_operations.has_key?(operation_name.to_sym)
+      given_configuration.unstable_operations[operation_name.to_sym] = true
+    end
 
     # perform operation
     args = operation["parameters"].map do |p|
@@ -104,23 +168,28 @@ World(APIWorld)
 
 
 Given('a valid "apiKeyAuth" key in the system') do
-  configuration.api_key['apiKeyAuth'] = ENV["DD_TEST_CLIENT_API_KEY"]
+  configuration.api_key = ENV["DD_TEST_CLIENT_API_KEY"]
 end
 
 Given('a valid "appKeyAuth" key in the system') do
-  configuration.api_key['appKeyAuth'] = ENV["DD_TEST_CLIENT_APP_KEY"]
+  configuration.application_key = ENV["DD_TEST_CLIENT_APP_KEY"]
 end
 
 Given(/^an instance of "([^"]+)" API$/) do |api_name|
   configuration.debugging = ENV["DEBUG"].present?
-  @api_instance = api.const_get("#{api_name}Api").new api_client
+  @api_instance = api.const_get("#{api_name}API").new api_client
 end
 
 Given('operation {string} enabled') do |name|
   configuration.unstable_operations[name.snakecase.to_sym] = true
 end
 
-Given(/^body (.*)$/) do |body|
+Given(/^body with value (.*)$/) do |body|
+  opts[:body] = JSON.parse(body.templated fixtures)
+end
+
+Given(/^body from file "(.*)"$/) do |file|
+  body = File.read(File.join(__dir__, "..", "v" + @api_version, file))
   opts[:body] = JSON.parse(body.templated fixtures)
 end
 
@@ -149,11 +218,14 @@ When('the request is sent') do
     @response = [nil, e.code, nil]
   end
 
-  @undo << undo_builder.call(@response[0]) if undo_builder
+  if @response[1].between?(200, 299)  then
+    @undo << undo_builder.call(@response[0]) if undo_builder
+  end
+
 end
 
 Then(/^the response "([^"]+)" is equal to (.*)$/) do |response_path, value|
-  expect(@response[0].lookup response_path).to eq JSON.parse(value.templated fixtures)
+  expect(@response[0].to_body.lookup response_path).to eq JSON.parse(value.templated(fixtures), :symbolize_names => true)
 end
 
 Then(/^the response status is (\d+) (.*)$/) do |status, msg|

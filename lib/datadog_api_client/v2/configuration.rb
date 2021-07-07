@@ -180,14 +180,17 @@ module DatadogAPIClient::V2
             get_incident: false,
             list_incidents: false,
             update_incident: false,
-            list_logs: false,
-            list_logs_get: false,
-            add_read_role_to_archive: false,
-            list_archive_read_roles: false,
-            remove_role_from_archive: false,
+            create_tag_configuration: false,
+            delete_tag_configuration: false,
+            list_tag_configuration_by_name: false,
+            list_tag_configurations: false,
+            update_tag_configuration: false,
             list_security_monitoring_signals: false,
             search_security_monitoring_signals: false,
       }
+      @server_variables[:site] = ENV['DD_SITE'] if ENV.key? 'DD_SITE'
+      @api_key['apiKeyAuth'] = ENV['DD_API_KEY'] if ENV.key? 'DD_API_KEY'
+      @api_key['appKeyAuth'] = ENV['DD_APP_KEY'] if ENV.key? 'DD_APP_KEY'
 
       yield(self) if block_given?
     end
@@ -245,14 +248,14 @@ module DatadogAPIClient::V2
     # Returns Auth Settings hash for api client.
     def auth_settings
       {
-        'apiKeyAuth' =>
+        apiKeyAuth:
           {
             type: 'api_key',
             in: 'header',
             key: 'DD-API-KEY',
             value: api_key_with_prefix('apiKeyAuth')
           },
-        'appKeyAuth' =>
+        appKeyAuth:
           {
             type: 'api_key',
             in: 'header',
@@ -274,6 +277,7 @@ module DatadogAPIClient::V2
                 default_value: "datadoghq.com",
                 enum_values: [
                   "datadoghq.com",
+                  "us3.datadoghq.com",
                   "datadoghq.eu",
                   "ddog-gov.com"
                 ]
@@ -295,6 +299,20 @@ module DatadogAPIClient::V2
             protocol: {
                 description: "The protocol for accessing the API.",
                 default_value: "https",
+              }
+            }
+        },
+        {
+          url: "https://{subdomain}.{site}",
+          description: "No description provided",
+          variables: {
+            site: {
+                description: "Any Datadog deployment.",
+                default_value: "datadoghq.com",
+              },
+            subdomain: {
+                description: "The subdomain where the API is deployed.",
+                default_value: "api",
               }
             }
         }

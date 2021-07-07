@@ -52,7 +52,7 @@ module DatadogAPIClient::V1
     # Attribute type mapping.
     def self.openapi_types
       {
-        :'categories' => :'Array<LogsCategoryProcessorCategories>',
+        :'categories' => :'Array<LogsCategoryProcessorCategory>',
         :'is_enabled' => :'Boolean',
         :'name' => :'String',
         :'target' => :'String',
@@ -213,6 +213,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

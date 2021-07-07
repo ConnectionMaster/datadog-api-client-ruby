@@ -27,11 +27,14 @@ module DatadogAPIClient::V1
     # Whether or not to send a log sample when the log monitor triggers.
     attr_accessor :enable_logs_sample
 
-    # A message to include with a re-notification. Supports the `@username` notification we allow elsewhere. Not applicable if `renotify_interval` is `None`.
+    # We recommend using the [is_renotify](https://docs.datadoghq.com/monitors/notifications/?tab=is_alert#renotify), block in the original message instead. A message to include with a re-notification. Supports the `@username` notification we allow elsewhere. Not applicable if `renotify_interval` is `None`.
     attr_accessor :escalation_message
 
     # Time (in seconds) to delay evaluation, as a non-negative integer. For example, if the value is set to `300` (5min), the timeframe is set to `last_5m` and the time is 7:00, the monitor evaluates data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor always has data during evaluation.
     attr_accessor :evaluation_delay
+
+    # Whether the log alert monitor triggers a single alert or multiple alerts when any group breaches a threshold.
+    attr_accessor :groupby_simple_monitor
 
     # A Boolean indicating whether notifications from this monitor automatically inserts its triggering tags into the title.  **Examples** - If `True`, `[Triggered on {host:h1}] Monitor Title` - If `False`, `[Triggered] Monitor Title`
     attr_accessor :include_tags
@@ -63,9 +66,6 @@ module DatadogAPIClient::V1
     # A Boolean indicating whether this monitor needs a full window of data before it’s evaluated. We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations are skipped. Default is false.
     attr_accessor :require_full_window
 
-    # A list of role identifiers that can be pulled from the Roles API. Cannot be used with `locked`.
-    attr_accessor :restricted_roles
-
     # Information about the downtime applied to the monitor.
     attr_accessor :silenced
 
@@ -87,6 +87,7 @@ module DatadogAPIClient::V1
         :'enable_logs_sample' => :'enable_logs_sample',
         :'escalation_message' => :'escalation_message',
         :'evaluation_delay' => :'evaluation_delay',
+        :'groupby_simple_monitor' => :'groupby_simple_monitor',
         :'include_tags' => :'include_tags',
         :'locked' => :'locked',
         :'min_failure_duration' => :'min_failure_duration',
@@ -97,7 +98,6 @@ module DatadogAPIClient::V1
         :'notify_no_data' => :'notify_no_data',
         :'renotify_interval' => :'renotify_interval',
         :'require_full_window' => :'require_full_window',
-        :'restricted_roles' => :'restricted_roles',
         :'silenced' => :'silenced',
         :'synthetics_check_id' => :'synthetics_check_id',
         :'threshold_windows' => :'threshold_windows',
@@ -119,6 +119,7 @@ module DatadogAPIClient::V1
         :'enable_logs_sample' => :'Boolean',
         :'escalation_message' => :'String',
         :'evaluation_delay' => :'Integer',
+        :'groupby_simple_monitor' => :'Boolean',
         :'include_tags' => :'Boolean',
         :'locked' => :'Boolean',
         :'min_failure_duration' => :'Integer',
@@ -129,7 +130,6 @@ module DatadogAPIClient::V1
         :'notify_no_data' => :'Boolean',
         :'renotify_interval' => :'Integer',
         :'require_full_window' => :'Boolean',
-        :'restricted_roles' => :'Array<String>',
         :'silenced' => :'Hash<String, Integer>',
         :'synthetics_check_id' => :'String',
         :'threshold_windows' => :'MonitorThresholdWindowOptions',
@@ -191,6 +191,10 @@ module DatadogAPIClient::V1
         self.evaluation_delay = attributes[:'evaluation_delay']
       end
 
+      if attributes.key?(:'groupby_simple_monitor')
+        self.groupby_simple_monitor = attributes[:'groupby_simple_monitor']
+      end
+
       if attributes.key?(:'include_tags')
         self.include_tags = attributes[:'include_tags']
       else
@@ -241,12 +245,6 @@ module DatadogAPIClient::V1
 
       if attributes.key?(:'require_full_window')
         self.require_full_window = attributes[:'require_full_window']
-      end
-
-      if attributes.key?(:'restricted_roles')
-        if (value = attributes[:'restricted_roles']).is_a?(Array)
-          self.restricted_roles = value
-        end
       end
 
       if attributes.key?(:'silenced')
@@ -319,6 +317,7 @@ module DatadogAPIClient::V1
           enable_logs_sample == o.enable_logs_sample &&
           escalation_message == o.escalation_message &&
           evaluation_delay == o.evaluation_delay &&
+          groupby_simple_monitor == o.groupby_simple_monitor &&
           include_tags == o.include_tags &&
           locked == o.locked &&
           min_failure_duration == o.min_failure_duration &&
@@ -329,7 +328,6 @@ module DatadogAPIClient::V1
           notify_no_data == o.notify_no_data &&
           renotify_interval == o.renotify_interval &&
           require_full_window == o.require_full_window &&
-          restricted_roles == o.restricted_roles &&
           silenced == o.silenced &&
           synthetics_check_id == o.synthetics_check_id &&
           threshold_windows == o.threshold_windows &&
@@ -346,7 +344,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [aggregation, device_ids, enable_logs_sample, escalation_message, evaluation_delay, include_tags, locked, min_failure_duration, min_location_failed, new_host_delay, no_data_timeframe, notify_audit, notify_no_data, renotify_interval, require_full_window, restricted_roles, silenced, synthetics_check_id, threshold_windows, thresholds, timeout_h].hash
+      [aggregation, device_ids, enable_logs_sample, escalation_message, evaluation_delay, groupby_simple_monitor, include_tags, locked, min_failure_duration, min_location_failed, new_host_delay, no_data_timeframe, notify_audit, notify_no_data, renotify_interval, require_full_window, silenced, synthetics_check_id, threshold_windows, thresholds, timeout_h].hash
     end
 
     # Builds the object from hash
@@ -402,6 +400,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

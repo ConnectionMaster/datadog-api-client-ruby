@@ -102,6 +102,15 @@ components:
       required: true
       schema:
         type: string
+    ApplicationKeyIncludeParameter:
+      description: Resource path for related resources to include in the response.
+        Only `owned_by` is supported.
+      in: query
+      name: include
+      required: false
+      schema:
+        example: owned_by
+        type: string
     ApplicationKeysSortParameter:
       description: 'Application key attribute used to sort results. Sort order is
         ascending
@@ -192,6 +201,14 @@ components:
       required: true
       schema:
         type: string
+    MetricName:
+      description: The name of the metric.
+      example: dist.http.endpoint.request
+      in: path
+      name: metric_name
+      required: true
+      schema:
+        type: string
     PageNumber:
       description: Specific page number to return.
       in: query
@@ -199,6 +216,7 @@ components:
       required: false
       schema:
         default: 0
+        example: 0
         format: int64
         type: integer
     PageOffset:
@@ -208,6 +226,7 @@ components:
       required: false
       schema:
         default: 0
+        example: 0
         format: int64
         type: integer
     PageSize:
@@ -217,12 +236,20 @@ components:
       required: false
       schema:
         default: 10
+        example: 10
         format: int64
         type: integer
     RoleID:
       description: The ID of the role.
       in: path
       name: role_id
+      required: true
+      schema:
+        type: string
+    SecurityFilterID:
+      description: The ID of the security filter.
+      in: path
+      name: security_filter_id
       required: true
       schema:
         type: string
@@ -239,6 +266,7 @@ components:
       name: user_id
       required: true
       schema:
+        example: 00000000-0000-0000-0000-000000000000
         type: string
   requestBodies: {}
   responses:
@@ -723,6 +751,7 @@ components:
       - integration_screenboard
       - integration_timeboard
       - host_timeboard
+      example: host_timeboard
       type: string
       x-enum-varnames:
       - CUSTOM_TIMEBOARD
@@ -940,14 +969,14 @@ components:
       - METRICTAG
       - AUTOCOMPLETE
     IncidentIntegrationMetadataType:
-      default: incident_integration_metadata
+      default: incident_integrations
       description: Integration metadata resource type.
       enum:
-      - incident_integration_metadata
-      example: incident_integration_metadata
+      - incident_integrations
+      example: incident_integrations
       type: string
       x-enum-varnames:
-      - INCIDENT_INTEGRATION_METADATA
+      - INCIDENT_INTEGRATIONS
     IncidentPostmortemType:
       default: incident_postmortems
       description: Incident postmortem resource type.
@@ -1250,7 +1279,6 @@ components:
         type:
           $ref: '#/components/schemas/IncidentServiceType'
       required:
-      - id
       - type
       type: object
     IncidentServiceUpdateRequest:
@@ -1430,7 +1458,6 @@ components:
         type:
           $ref: '#/components/schemas/IncidentTeamType'
       required:
-      - id
       - type
       type: object
     IncidentTeamUpdateRequest:
@@ -1667,9 +1694,9 @@ components:
               integrations:
                 data:
                 - id: 00000000-0000-0000-0000-000000000000
-                  type: incident_integration_metadata
+                  type: incident_integrations
                 - id: 00000000-0000-0000-0000-000000000000
-                  type: incident_integration_metadata
+                  type: incident_integrations
               last_modified_by_user:
                 data:
                   id: 00000000-0000-0000-0000-000000000000
@@ -1711,9 +1738,9 @@ components:
               integrations:
                 data:
                 - id: 00000000-0000-0000-0000-000000000000
-                  type: incident_integration_metadata
+                  type: incident_integrations
                 - id: 00000000-0000-0000-0000-000000000000
-                  type: incident_integration_metadata
+                  type: incident_integrations
               last_modified_by_user:
                 data:
                   id: 00000000-0000-0000-0000-000000000000
@@ -2844,6 +2871,348 @@ components:
             from the other indexes
           type: string
       type: object
+    Metric:
+      description: Object for a single metric tag configuration.
+      example:
+        id: metric.foo.bar
+        type: metric
+      properties:
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricType'
+      type: object
+    MetricAllTags:
+      description: Object for a single metric's indexed tags.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricAllTagsAttributes'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricType'
+      type: object
+    MetricAllTagsAttributes:
+      description: Object containing the definition of a metric's tags.
+      properties:
+        tags:
+          description: List of indexed tag value pairs.
+          example:
+          - sport:golf
+          - sport:football
+          - animal:dog
+          items:
+            description: Tag key-value pairs.
+            type: string
+          type: array
+      type: object
+    MetricAllTagsResponse:
+      description: Response object that includes a single metric's indexed tags.
+      properties:
+        data:
+          $ref: '#/components/schemas/MetricAllTags'
+      readOnly: true
+      type: object
+    MetricDistinctVolume:
+      description: Object for a single metric's distinct volume.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricDistinctVolumeAttributes'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricDistinctVolumeType'
+      type: object
+    MetricDistinctVolumeAttributes:
+      description: Object containing the definition of a metric's distinct volume.
+      properties:
+        distinct_volume:
+          description: Distinct volume for the given metric.
+          example: 10
+          format: int64
+          type: integer
+      type: object
+    MetricDistinctVolumeType:
+      default: distinct_metric_volumes
+      description: The metric distinct volume type.
+      enum:
+      - distinct_metric_volumes
+      example: distinct_metric_volumes
+      type: string
+      x-enum-varnames:
+      - DISTINCT_METRIC_VOLUMES
+    MetricIngestedIndexedVolume:
+      description: Object for a single metric's ingested and indexed volume.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricIngestedIndexedVolumeAttributes'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricIngestedIndexedVolumeType'
+      type: object
+    MetricIngestedIndexedVolumeAttributes:
+      description: Object containing the definition of a metric's ingested and indexed
+        volume.
+      properties:
+        indexed_volume:
+          description: Indexed volume for the given metric.
+          example: 10
+          format: int64
+          type: integer
+        ingested_volume:
+          description: Ingested volume for the given metric.
+          example: 20
+          format: int64
+          type: integer
+      type: object
+    MetricIngestedIndexedVolumeType:
+      default: metric_volumes
+      description: The metric ingested and indexed volume type.
+      enum:
+      - metric_volumes
+      example: metric_volumes
+      type: string
+      x-enum-varnames:
+      - METRIC_VOLUMES
+    MetricName:
+      description: The metric name for this resource.
+      example: test.metric.latency
+      type: string
+    MetricTagConfiguration:
+      description: Object for a single metric tag configuration.
+      example:
+        attributes:
+          created_at: '2020-03-31T09:48:37.463835Z'
+          metric_type: gauge
+          modified_at: '2020-04-31T09:48:37.463835Z'
+          tags:
+          - app
+          - datacenter
+        id: http.request.latency
+        type: manage_tags
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricTagConfigurationAttributes'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricTagConfigurationType'
+      type: object
+    MetricTagConfigurationAttributes:
+      description: Object containing the definition of a metric tag configuration
+        attributes.
+      properties:
+        created_at:
+          description: Timestamp when the tag configuration was created.
+          example: '2020-03-31T09:48:37.463835Z'
+          format: date-time
+          type: string
+        include_percentiles:
+          description: 'Toggle to turn on/off percentile aggregations for distribution
+            metrics.
+
+            Only present when the `metric_type` is `distribution`.'
+          example: true
+          type: boolean
+        metric_type:
+          $ref: '#/components/schemas/MetricTagConfigurationMetricTypes'
+        modified_at:
+          description: Timestamp when the tag configuration was last modified.
+          example: '2020-03-31T09:48:37.463835Z'
+          format: date-time
+          type: string
+        tags:
+          description: List of tag keys on which to group.
+          example:
+          - app
+          - datacenter
+          items:
+            description: Tag keys to group by.
+            type: string
+          type: array
+      type: object
+    MetricTagConfigurationCreateAttributes:
+      description: Object containing the definition of a metric tag configuration
+        to be created.
+      properties:
+        include_percentiles:
+          default: false
+          description: 'Toggle to include/exclude percentiles for a distribution metric.
+
+            Defaults to false. Can only be applied to metrics that have a `metric_type`
+            of `distribution`.'
+          example: true
+          type: boolean
+        metric_type:
+          $ref: '#/components/schemas/MetricTagConfigurationMetricTypes'
+        tags:
+          default: []
+          description: A list of tag keys that will be queryable for your metric.
+          example:
+          - app
+          - datacenter
+          items:
+            description: Tag keys to group by.
+            type: string
+          type: array
+      required:
+      - tags
+      - metric_type
+      type: object
+    MetricTagConfigurationCreateData:
+      description: Object for a single metric to be configure tags on.
+      example:
+        attributes:
+          include_percentiles: false
+          metric_type: distribution
+          tags:
+          - app
+          - datacenter
+        id: http.endpoint.request
+        type: manage_tags
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricTagConfigurationCreateAttributes'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricTagConfigurationType'
+      required:
+      - id
+      - type
+      type: object
+    MetricTagConfigurationCreateRequest:
+      description: Request object that includes the metric that you would like to
+        configure tags for.
+      properties:
+        data:
+          $ref: '#/components/schemas/MetricTagConfigurationCreateData'
+      required:
+      - data
+      type: object
+    MetricTagConfigurationMetricTypes:
+      default: gauge
+      description: The metric's type.
+      enum:
+      - gauge
+      - count
+      - rate
+      - distribution
+      example: count
+      type: string
+      x-enum-varnames:
+      - GAUGE
+      - COUNT
+      - RATE
+      - DISTRIBUTION
+    MetricTagConfigurationResponse:
+      description: Response object which includes a single metric's tag configuration.
+      properties:
+        data:
+          $ref: '#/components/schemas/MetricTagConfiguration'
+      readOnly: true
+      type: object
+    MetricTagConfigurationType:
+      default: manage_tags
+      description: The metric tag configuration resource type.
+      enum:
+      - manage_tags
+      example: manage_tags
+      type: string
+      x-enum-varnames:
+      - MANAGE_TAGS
+    MetricTagConfigurationUpdateAttributes:
+      description: Object containing the definition of a metric tag configuration
+        to be updated.
+      properties:
+        include_percentiles:
+          default: false
+          description: 'Toggle to include/exclude percentiles for a distribution metric.
+
+            Defaults to false. Can only be applied to metrics that have a `metric_type`
+            of `distribution`.'
+          example: true
+          type: boolean
+        tags:
+          default: []
+          description: A list of tag keys that will be queryable for your metric.
+          example:
+          - app
+          - datacenter
+          items:
+            description: Tag keys to group by.
+            type: string
+          type: array
+      type: object
+    MetricTagConfigurationUpdateData:
+      description: Object for a single tag configuration to be edited.
+      example:
+        attributes:
+          group_by:
+          - app
+          - datacenter
+          include_percentiles: false
+        id: http.endpoint.request
+        type: manage_tags
+      properties:
+        attributes:
+          $ref: '#/components/schemas/MetricTagConfigurationUpdateAttributes'
+        id:
+          $ref: '#/components/schemas/MetricName'
+        type:
+          $ref: '#/components/schemas/MetricTagConfigurationType'
+      required:
+      - id
+      - type
+      type: object
+    MetricTagConfigurationUpdateRequest:
+      description: Request object that includes the metric that you would like to
+        edit the tag configuration on.
+      properties:
+        data:
+          $ref: '#/components/schemas/MetricTagConfigurationUpdateData'
+      required:
+      - data
+      type: object
+    MetricType:
+      default: metrics
+      description: The metric resource type.
+      enum:
+      - metrics
+      example: metrics
+      type: string
+      x-enum-varnames:
+      - METRICS
+    MetricVolumes:
+      description: Possible response objects for a metric's volume.
+      oneOf:
+      - $ref: '#/components/schemas/MetricDistinctVolume'
+      - $ref: '#/components/schemas/MetricIngestedIndexedVolume'
+      type: object
+    MetricVolumesResponse:
+      description: Response object which includes a single metric's volume.
+      properties:
+        data:
+          $ref: '#/components/schemas/MetricVolumes'
+      readOnly: true
+      type: object
+    MetricsAndMetricTagConfigurations:
+      description: Object for a metrics and metric tag configurations.
+      oneOf:
+      - $ref: '#/components/schemas/Metric'
+      - $ref: '#/components/schemas/MetricTagConfiguration'
+      type: object
+    MetricsAndMetricTagConfigurationsResponse:
+      description: Response object that includes metrics and metric tag configurations.
+      properties:
+        data:
+          description: Array of metrics and metric tag configurations.
+          items:
+            $ref: '#/components/schemas/MetricsAndMetricTagConfigurations'
+          type: array
+      readOnly: true
+      type: object
     Organization:
       description: Organization object.
       properties:
@@ -3135,7 +3504,7 @@ components:
       description: A relationship reference for an integration metadata object.
       example:
         id: 00000000-0000-0000-0000-000000000000
-        type: incident_integration_metadata
+        type: incident_integrations
       properties:
         id:
           description: A unique identifier that represents the integration metadata.
@@ -3152,17 +3521,17 @@ components:
       example:
         data:
         - id: 00000000-0000-0000-0000-000000000000
-          type: incident_integration_metadata
+          type: incident_integrations
         - id: 00000000-0000-0000-0000-000000000000
-          type: incident_integration_metadata
+          type: incident_integrations
       properties:
         data:
           description: The integration metadata relationship array
           example:
           - id: 00000000-0000-0000-0000-000000000000
-            type: incident_integration_metadata
+            type: incident_integrations
           - id: 00000000-0000-0000-0000-000000000000
-            type: incident_integration_metadata
+            type: incident_integrations
           items:
             $ref: '#/components/schemas/RelationshipToIncidentIntegrationMetadataData'
           type: array
@@ -3532,6 +3901,231 @@ components:
       type: string
       x-enum-varnames:
       - ROLES
+    SecurityFilter:
+      description: The security filter's properties.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/SecurityFilterAttributes'
+        id:
+          $ref: '#/components/schemas/SecurityFilterID'
+        type:
+          $ref: '#/components/schemas/SecurityFilterType'
+      type: object
+    SecurityFilterAttributes:
+      description: The object describing a security filter.
+      properties:
+        exclusion_filters:
+          description: The list of exclusion filters applied in this security filter.
+          items:
+            $ref: '#/components/schemas/SecurityFilterExclusionFilterResponse'
+          type: array
+        filtered_data_type:
+          $ref: '#/components/schemas/SecurityFilterFilteredDataType'
+        is_builtin:
+          description: Whether the security filter is the built-in filter.
+          example: false
+          type: boolean
+        is_enabled:
+          description: Whether the security filter is enabled.
+          example: false
+          type: boolean
+        name:
+          description: The security filter name.
+          example: Custom security filter
+          type: string
+        query:
+          description: The security filter query. Logs accepted by this query will
+            be accepted by this filter.
+          example: service:api
+          type: string
+        version:
+          description: The version of the security filter.
+          example: 1
+          format: int32
+          maximum: 2147483647
+          type: integer
+      type: object
+    SecurityFilterCreateAttributes:
+      description: Object containing the attributes of the security filter to be created.
+      properties:
+        exclusion_filters:
+          description: Exclusion filters to exclude some logs from the security filter.
+          example:
+          - name: Exclude staging
+            query: source:staging
+          items:
+            $ref: '#/components/schemas/SecurityFilterExclusionFilter'
+          type: array
+        filtered_data_type:
+          $ref: '#/components/schemas/SecurityFilterFilteredDataType'
+        is_enabled:
+          description: Whether the security filter is enabled.
+          example: true
+          type: boolean
+        name:
+          description: The name of the security filter.
+          example: Custom security filter
+          type: string
+        query:
+          description: The query of the security filter.
+          example: service:api
+          type: string
+      required:
+      - name
+      - query
+      - exclusion_filters
+      - filtered_data_type
+      - is_enabled
+      type: object
+    SecurityFilterCreateData:
+      description: Object for a single security filter.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/SecurityFilterCreateAttributes'
+        type:
+          $ref: '#/components/schemas/SecurityFilterType'
+      required:
+      - type
+      - attributes
+      type: object
+    SecurityFilterCreateRequest:
+      description: Request object that includes the security filter that you would
+        like to create.
+      properties:
+        data:
+          $ref: '#/components/schemas/SecurityFilterCreateData'
+      required:
+      - data
+      type: object
+    SecurityFilterExclusionFilter:
+      description: Exclusion filter for the security filter.
+      example:
+        name: Exclude staging
+        query: source:staging
+      properties:
+        name:
+          description: Exclusion filter name.
+          example: Exclude staging
+          type: string
+        query:
+          description: Exclusion filter query. Logs that match this query are excluded
+            from the security filter.
+          example: source:staging
+          type: string
+      required:
+      - name
+      - query
+      type: object
+    SecurityFilterExclusionFilterResponse:
+      description: A single exclusion filter.
+      properties:
+        name:
+          description: The exclusion filter name.
+          example: Exclude staging
+          type: string
+        query:
+          description: The exclusion filter query.
+          example: source:staging
+          type: string
+      type: object
+    SecurityFilterFilteredDataType:
+      description: The filtered data type.
+      enum:
+      - logs
+      example: logs
+      type: string
+      x-enum-varnames:
+      - LOGS
+    SecurityFilterID:
+      description: The ID of the security filter.
+      example: 3dd-0uc-h1s
+      type: string
+    SecurityFilterMeta:
+      description: Optional metadata associated to the response.
+      properties:
+        warning:
+          description: A warning message.
+          example: All the security filters are disabled. As a result, no logs are
+            being analyzed.
+          type: string
+      type: object
+    SecurityFilterResponse:
+      description: Response object which includes a single security filter.
+      properties:
+        data:
+          $ref: '#/components/schemas/SecurityFilter'
+        meta:
+          $ref: '#/components/schemas/SecurityFilterMeta'
+      type: object
+    SecurityFilterType:
+      default: security_filters
+      description: The type of the resource. The value should always be `security_filters`.
+      enum:
+      - security_filters
+      example: security_filters
+      type: string
+      x-enum-varnames:
+      - SECURITY_FILTERS
+    SecurityFilterUpdateAttributes:
+      description: The security filters properties to be updated.
+      properties:
+        exclusion_filters:
+          description: Exclusion filters to exclude some logs from the security filter.
+          example: []
+          items:
+            $ref: '#/components/schemas/SecurityFilterExclusionFilter'
+          type: array
+        filtered_data_type:
+          $ref: '#/components/schemas/SecurityFilterFilteredDataType'
+        is_enabled:
+          description: Whether the security filter is enabled.
+          example: true
+          type: boolean
+        name:
+          description: The name of the security filter.
+          example: Custom security filter
+          type: string
+        query:
+          description: The query of the security filter.
+          example: service:api
+          type: string
+        version:
+          description: The version of the security filter to update.
+          example: 1
+          format: int32
+          maximum: 2147483647
+          type: integer
+      type: object
+    SecurityFilterUpdateData:
+      description: The new security filter properties.
+      properties:
+        attributes:
+          $ref: '#/components/schemas/SecurityFilterUpdateAttributes'
+        type:
+          $ref: '#/components/schemas/SecurityFilterType'
+      required:
+      - type
+      - attributes
+      type: object
+    SecurityFilterUpdateRequest:
+      description: The new security filter body.
+      properties:
+        data:
+          $ref: '#/components/schemas/SecurityFilterUpdateData'
+      required:
+      - data
+      type: object
+    SecurityFiltersResponse:
+      description: All the available security filters objects.
+      properties:
+        data:
+          description: A list of security filters objects.
+          items:
+            $ref: '#/components/schemas/SecurityFilter'
+          type: array
+        meta:
+          $ref: '#/components/schemas/SecurityFilterMeta'
+      type: object
     SecurityMonitoringFilter:
       description: The rule's suppression filter.
       properties:
@@ -3554,7 +4148,7 @@ components:
       description: List of rules.
       properties:
         data:
-          description: TODO.
+          description: Array containing the list of rules.
           items:
             $ref: '#/components/schemas/SecurityMonitoringRuleResponse'
           type: array
@@ -3620,6 +4214,11 @@ components:
           items:
             $ref: '#/components/schemas/SecurityMonitoringFilter'
           type: array
+        hasExtendedTitle:
+          description: Whether the notifications include the triggering group-by values
+            in their title.
+          example: true
+          type: boolean
         isEnabled:
           description: Whether the rule is enabled.
           example: true
@@ -3630,7 +4229,7 @@ components:
           type: string
         name:
           description: The name of the rule.
-          example: ''
+          example: My security monitoring rule.
           type: string
         options:
           $ref: '#/components/schemas/SecurityMonitoringRuleOptions'
@@ -3657,6 +4256,17 @@ components:
       - cases
       - message
       type: object
+    SecurityMonitoringRuleDetectionMethod:
+      description: The detection method.
+      enum:
+      - threshold
+      - new_value
+      - anomaly_detection
+      type: string
+      x-enum-varnames:
+      - THRESHOLD
+      - NEW_VALUE
+      - ANOMALY_DETECTION
     SecurityMonitoringRuleEvaluationWindow:
       description: 'A time window is specified to match when at least one of the cases
         matches true. This is a sliding window
@@ -3683,8 +4293,8 @@ components:
       - ONE_HOUR
       - TWO_HOURS
     SecurityMonitoringRuleKeepAlive:
-      description: "Once a signal is generated, the signal will remain \u201Copen\u201D\
-        \ if a case is matched at least once within\nthis keep alive window."
+      description: "Once a signal is generated, the signal will remain \u201Copen\u201D
+        if a case is matched at least once within\nthis keep alive window."
       enum:
       - 0
       - 60
@@ -3710,9 +4320,9 @@ components:
       - THREE_HOURS
       - SIX_HOURS
     SecurityMonitoringRuleMaxSignalDuration:
-      description: "A signal will \u201Cclose\u201D regardless of the query being\
-        \ matched once the time exceeds the maximum duration.\nThis time is calculated\
-        \ from the first seen timestamp."
+      description: "A signal will \u201Cclose\u201D regardless of the query being
+        matched once the time exceeds the maximum duration.\nThis time is calculated
+        from the first seen timestamp."
       enum:
       - 0
       - 60
@@ -3741,19 +4351,67 @@ components:
       - SIX_HOURS
       - TWELVE_HOURS
       - ONE_DAY
+    SecurityMonitoringRuleNewValueOptions:
+      description: Options on new value rules.
+      properties:
+        forgetAfter:
+          $ref: '#/components/schemas/SecurityMonitoringRuleNewValueOptionsForgetAfter'
+        learningDuration:
+          $ref: '#/components/schemas/SecurityMonitoringRuleNewValueOptionsLearningDuration'
+      type: object
+    SecurityMonitoringRuleNewValueOptionsForgetAfter:
+      description: The duration in days after which a learned value is forgotten.
+      enum:
+      - 1
+      - 2
+      - 7
+      - 14
+      - 21
+      - 28
+      format: int32
+      type: integer
+      x-enum-varnames:
+      - ONE_DAY
+      - TWO_DAYS
+      - ONE_WEEK
+      - TWO_WEEKS
+      - THREE_WEEKS
+      - FOUR_WEEKS
+    SecurityMonitoringRuleNewValueOptionsLearningDuration:
+      description: 'The duration in days during which values are learned, and after
+        which signals will be generated for values that
+
+        weren''t learned. If set to 0, a signal will be generated for all new values
+        after the first value is learned.'
+      enum:
+      - 0
+      - 1
+      - 7
+      format: int32
+      type: integer
+      x-enum-varnames:
+      - ZERO_DAYS
+      - ONE_DAY
+      - SEVEN_DAYS
     SecurityMonitoringRuleOptions:
       description: Options on rules.
       properties:
+        detectionMethod:
+          $ref: '#/components/schemas/SecurityMonitoringRuleDetectionMethod'
         evaluationWindow:
           $ref: '#/components/schemas/SecurityMonitoringRuleEvaluationWindow'
         keepAlive:
           $ref: '#/components/schemas/SecurityMonitoringRuleKeepAlive'
         maxSignalDuration:
           $ref: '#/components/schemas/SecurityMonitoringRuleMaxSignalDuration'
+        newValueOptions:
+          $ref: '#/components/schemas/SecurityMonitoringRuleNewValueOptions'
       type: object
     SecurityMonitoringRuleQuery:
       description: Query for matching rule.
       properties:
+        agentRule:
+          $ref: '#/components/schemas/SecurityMonitoringRuntimeAgentRule'
         aggregation:
           $ref: '#/components/schemas/SecurityMonitoringRuleQueryAggregation'
         distinctFields:
@@ -3787,15 +4445,19 @@ components:
       - cardinality
       - sum
       - max
+      - new_value
       type: string
       x-enum-varnames:
       - COUNT
       - CARDINALITY
       - SUM
       - MAX
+      - NEW_VALUE
     SecurityMonitoringRuleQueryCreate:
       description: Query for matching rule.
       properties:
+        agentRule:
+          $ref: '#/components/schemas/SecurityMonitoringRuntimeAgentRule'
         aggregation:
           $ref: '#/components/schemas/SecurityMonitoringRuleQueryAggregation'
         distinctFields:
@@ -3820,13 +4482,13 @@ components:
           type: string
         query:
           description: Query to run on logs.
-          example: a < 3
+          example: a > 3
           type: string
       required:
       - query
       type: object
     SecurityMonitoringRuleResponse:
-      description: Detection rule.
+      description: Rule.
       properties:
         cases:
           description: Cases for generating signals.
@@ -3847,6 +4509,10 @@ components:
           items:
             $ref: '#/components/schemas/SecurityMonitoringFilter'
           type: array
+        hasExtendedTitle:
+          description: Whether the notifications include the triggering group-by values
+            in their title.
+          type: boolean
         id:
           description: The ID of the rule.
           type: string
@@ -3878,6 +4544,10 @@ components:
             description: Tag.
             type: string
           type: array
+        updateAuthorId:
+          description: User ID of the user who updated the rule.
+          format: int64
+          type: integer
         version:
           description: The version of the rule.
           format: int64
@@ -3911,6 +4581,11 @@ components:
           items:
             $ref: '#/components/schemas/SecurityMonitoringFilter'
           type: array
+        hasExtendedTitle:
+          description: Whether the notifications include the triggering group-by values
+            in their title.
+          example: true
+          type: boolean
         isEnabled:
           description: Whether the rule is enabled.
           type: boolean
@@ -3933,6 +4608,30 @@ components:
             description: Tag.
             type: string
           type: array
+        version:
+          description: The version of the rule being updated.
+          example: 1
+          format: int32
+          maximum: 2147483647
+          type: integer
+      type: object
+    SecurityMonitoringRuntimeAgentRule:
+      description: The Agent rule.
+      properties:
+        agentRuleId:
+          description: The Agent rule ID. Must be unique within the rule.
+          example: etc_shadow
+          type: string
+        expression:
+          description: 'A Runtime Security expression determines what activity should
+            be collected by the Datadog Agent.
+
+            These logical expressions can use predefined operators and attributes.
+            Tags cannot be used in Runtime
+
+            Security expressions. Instead, allow or deny based on tags under the advanced
+            option.'
+          type: string
       type: object
     SecurityMonitoringSignal:
       description: Object description of a security signal.
@@ -4108,6 +4807,10 @@ components:
         icon:
           description: URL of the user's icon.
           type: string
+        modified_at:
+          description: Time that the user was last modified.
+          format: date-time
+          type: string
         name:
           description: Name of the user.
           type: string
@@ -4126,7 +4829,7 @@ components:
       properties:
         email:
           description: The email of the user.
-          example: joe.doe@example.com
+          example: jane.doe@example.com
           type: string
         name:
           description: The name of the user.
@@ -4347,13 +5050,13 @@ components:
       in: header
       name: DD-API-KEY
       type: apiKey
-      x-env-name: DD_CLIENT_API_KEY
+      x-env-name: DD_API_KEY
     appKeyAuth:
       description: Your Datadog APP Key.
       in: header
       name: DD-APPLICATION-KEY
       type: apiKey
-      x-env-name: DD_CLIENT_APP_KEY
+      x-env-name: DD_APP_KEY
 info:
   contact:
     email: support@datadoghq.com
@@ -4438,8 +5141,8 @@ paths:
         api_key:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{\
-              \ unique }}\"\n    },\n    \"type\": \"api_keys\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{
+              unique }}\"\n    },\n    \"type\": \"api_keys\"\n  }\n}"
           step: there is a valid "api_key" in the system
       x-undo:
         operationId: DeleteAPIKey
@@ -4613,6 +5316,42 @@ paths:
       x-codegen-request-body-name: body
       x-undo:
         type: idempotent
+    get:
+      description: Get an application key for your org.
+      operationId: GetApplicationKey
+      parameters:
+      - $ref: '#/components/parameters/ApplicationKeyId'
+      - $ref: '#/components/parameters/ApplicationKeyIncludeParameter'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationKeyResponse'
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Not Found
+      summary: Get an application key
+      tags:
+      - Key Management
+      x-undo:
+        type: safe
     patch:
       description: Edit an application key
       operationId: UpdateApplicationKey
@@ -4732,8 +5471,8 @@ paths:
         application_key:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{\
-              \ unique }}\"\n    },\n    \"type\": \"application_keys\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{
+              unique }}\"\n    },\n    \"type\": \"application_keys\"\n  }\n}"
           step: there is a valid "application_key" in the system
       x-undo:
         operationId: DeleteCurrentUserApplicationKey
@@ -4886,6 +5625,7 @@ paths:
       tags:
       - Dashboard Lists
       x-codegen-request-body-name: body
+      x-menu-order: 4
       x-undo:
         type: idempotent
     get:
@@ -4918,9 +5658,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/APIErrorResponse'
           description: Not Found
-      summary: Get a Dashboard List
+      summary: Get items of a Dashboard List
       tags:
       - Dashboard Lists
+      x-menu-order: 1
       x-undo:
         type: safe
     post:
@@ -4970,6 +5711,7 @@ paths:
       tags:
       - Dashboard Lists
       x-codegen-request-body-name: body
+      x-menu-order: 2
       x-undo:
         type: safe
     put:
@@ -5019,6 +5761,7 @@ paths:
       tags:
       - Dashboard Lists
       x-codegen-request-body-name: body
+      x-menu-order: 3
       x-undo:
         type: safe
   /api/v2/incidents:
@@ -5085,9 +5828,9 @@ paths:
         incident:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"title\": \"{{\
-              \ unique }}\",\n      \"customer_impacted\": false\n     },\n     \"\
-              type\": \"incidents\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"title\": \"{{
+              unique }}\",\n      \"customer_impacted\": false\n     },\n     \"type\":
+              \"incidents\"\n  }\n}"
           step: there is a valid "incident" in the system
       x-undo:
         operationId: DeleteIncident
@@ -5215,6 +5958,7 @@ paths:
       tags:
       - Logs
       x-codegen-request-body-name: body
+      x-menu-order: 1
       x-undo:
         type: safe
   /api/v2/logs/config/archive-order:
@@ -5239,6 +5983,7 @@ paths:
       summary: Get archive order
       tags:
       - Logs Archives
+      x-menu-order: 9
       x-undo:
         type: safe
     put:
@@ -5289,6 +6034,7 @@ paths:
       tags:
       - Logs Archives
       x-codegen-request-body-name: body
+      x-menu-order: 10
       x-undo:
         type: safe
   /api/v2/logs/config/archives:
@@ -5311,6 +6057,7 @@ paths:
       summary: Get all archives
       tags:
       - Logs Archives
+      x-menu-order: 1
       x-undo:
         type: safe
     post:
@@ -5346,6 +6093,7 @@ paths:
       tags:
       - Logs Archives
       x-codegen-request-body-name: body
+      x-menu-order: 2
       x-undo:
         operationId: DeleteLogsArchive
         parameters:
@@ -5382,6 +6130,7 @@ paths:
       summary: Delete an archive
       tags:
       - Logs Archives
+      x-menu-order: 5
       x-undo:
         type: idempotent
     get:
@@ -5417,6 +6166,7 @@ paths:
       summary: Get an archive
       tags:
       - Logs Archives
+      x-menu-order: 3
       x-undo:
         type: safe
     put:
@@ -5465,6 +6215,7 @@ paths:
       tags:
       - Logs Archives
       x-codegen-request-body-name: body
+      x-menu-order: 4
       x-undo:
         type: safe
   /api/v2/logs/config/archives/{archive_id}/readers:
@@ -5504,11 +6255,9 @@ paths:
       tags:
       - Logs Archives
       x-codegen-request-body-name: body
+      x-menu-order: 8
       x-undo:
         type: idempotent
-      x-unstable: '**Note**: This endpoint is in public beta.
-
-        If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
     get:
       description: Returns all read roles a given archive is restricted to.
       operationId: ListArchiveReadRoles
@@ -5543,11 +6292,9 @@ paths:
       tags:
       - Logs Archives
       x-codegen-request-body-name: body
+      x-menu-order: 6
       x-undo:
         type: safe
-      x-unstable: '**Note**: This endpoint is in public beta.
-
-        If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
     post:
       description: Adds a read role to an archive. ([Roles API](https://docs.datadoghq.com/api/v2/roles/))
       operationId: AddReadRoleToArchive
@@ -5584,11 +6331,9 @@ paths:
       tags:
       - Logs Archives
       x-codegen-request-body-name: body
+      x-menu-order: 7
       x-undo:
         type: unsafe
-      x-unstable: '**Note**: This endpoint is in public beta.
-
-        If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
   /api/v2/logs/config/metrics:
     get:
       description: Get the list of configured log-based metrics with their definitions.
@@ -5607,6 +6352,7 @@ paths:
       summary: Get all log-based metrics
       tags:
       - Logs Metrics
+      x-menu-order: 1
       x-undo:
         type: safe
     post:
@@ -5645,11 +6391,12 @@ paths:
         logs_metric:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"id\": \"{{ unique }}\",\n    \"attributes\"\
-              : {\n      \"filter\": {\n        \"query\": \"source:{{ unique }}\"\
-              \n      },\n      \"compute\": {\n        \"aggregation_type\": \"count\"\
-              \n      }\n    },\n    \"type\": \"logs_metrics\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"id\": \"{{ unique }}\",\n    \"attributes\":
+              {\n      \"filter\": {\n        \"query\": \"source:{{ unique }}\"\n
+              \     },\n      \"compute\": {\n        \"aggregation_type\": \"count\"\n
+              \     }\n    },\n    \"type\": \"logs_metrics\"\n  }\n}"
           step: there is a valid "logs_metric" in the system
+      x-menu-order: 2
       x-undo:
         operationId: DeleteLogsMetric
         parameters:
@@ -5674,6 +6421,7 @@ paths:
       summary: Delete a log-based metric
       tags:
       - Logs Metrics
+      x-menu-order: 5
       x-undo:
         type: idempotent
     get:
@@ -5697,6 +6445,7 @@ paths:
       summary: Get a log-based metric
       tags:
       - Logs Metrics
+      x-menu-order: 3
       x-undo:
         type: safe
     patch:
@@ -5733,6 +6482,7 @@ paths:
       tags:
       - Logs Metrics
       x-codegen-request-body-name: body
+      x-menu-order: 4
       x-undo:
         type: idempotent
   /api/v2/logs/events:
@@ -5742,10 +6492,7 @@ paths:
         [Results are paginated][1].
 
 
-        Both this endpoint and the POST endpoint can be used interchangeably when
-        listing
-
-        logs.
+        Use this endpoint to see your latest logs.
 
 
         **If you are considering archiving logs for your organization,
@@ -5827,14 +6574,12 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '403':
           $ref: '#/components/responses/NotAuthorizedResponse'
-      summary: Get a quick list of logs
+      summary: Get a list of logs
       tags:
       - Logs
+      x-menu-order: 3
       x-undo:
         type: safe
-      x-unstable: '**Note**: This endpoint is in public beta.
-
-        If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
   /api/v2/logs/events/search:
     post:
       description: 'List endpoint returns logs that match a log search query.
@@ -5842,9 +6587,7 @@ paths:
         [Results are paginated][1].
 
 
-        Both this endpoint and the GET endpoint can be used interchangeably when listing
-
-        logs.
+        Use this endpoint to build complex logs filtering and search.
 
 
         **If you are considering archiving logs for your organization,
@@ -5875,15 +6618,410 @@ paths:
           $ref: '#/components/responses/BadRequestResponse'
         '403':
           $ref: '#/components/responses/NotAuthorizedResponse'
-      summary: Get a list of logs
+      summary: Search logs
       tags:
       - Logs
       x-codegen-request-body-name: body
+      x-menu-order: 2
       x-undo:
         type: safe
-      x-unstable: '**Note**: This endpoint is in public beta.
+  /api/v2/metrics:
+    get:
+      description: 'Returns all configured count/gauge/rate/distribution metric names
 
-        If you have any feedback, contact [Datadog support](https://docs.datadoghq.com/help/).'
+        (with additional filters if specified).'
+      operationId: ListTagConfigurations
+      parameters:
+      - description: Filter metrics that have configured tags.
+        example: true
+        in: query
+        name: filter[configured]
+        required: false
+        schema:
+          type: boolean
+      - description: Filter tag configurations by configured tags.
+        example: app
+        in: query
+        name: filter[tags_configured]
+        required: false
+        schema:
+          description: Tag keys to filter by.
+          type: string
+      - description: Filter tag configurations by metric type.
+        in: query
+        name: filter[metric_type]
+        required: false
+        schema:
+          $ref: '#/components/schemas/MetricTagConfigurationMetricTypes'
+      - description: 'Filter distributions with additional percentile
+
+          aggregations enabled or disabled.'
+        example: true
+        in: query
+        name: filter[include_percentiles]
+        required: false
+        schema:
+          type: boolean
+      - description: 'Filter metrics that have been submitted with the given tags.
+          Supports boolean and wildcard expressions.
+
+          Cannot be combined with other filters.'
+        example: env IN (staging,test) AND service:web
+        in: query
+        name: filter[tags]
+        required: false
+        schema:
+          type: string
+      - description: 'The number of seconds of look back (from now) to apply to a
+          filter[tag] query.
+
+          Defaults value is 3600 (1 hour), maximum value is 172,800 (2 days).'
+        example: 3600
+        in: query
+        name: window[seconds]
+        required: false
+        schema:
+          format: int64
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsAndMetricTagConfigurationsResponse'
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: List tag configurations
+      tags:
+      - Metrics
+      x-menu-order: 5
+      x-undo:
+        type: safe
+      x-unstable: "**Note: Use of this endpoint for count/gauge/rate metric types
+        is only accessible for Metrics without Limits&trade; beta customers.\nIf you\u2019re
+        interested in Metrics without Limits&trade;, please contact your Customer
+        Success Manager.**"
+  /api/v2/metrics/{metric_name}/all-tags:
+    get:
+      description: View indexed tag key-value pairs for a given metric name.
+      operationId: ListTagsByMetricName
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricAllTagsResponse'
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Not Found
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: List tags by metric name
+      tags:
+      - Metrics
+      x-menu-order: 6
+      x-undo:
+        type: safe
+  /api/v2/metrics/{metric_name}/tags:
+    delete:
+      description: 'Deletes a metric''s tag configuration. Can only be used with application
+
+        keys from users with the `Manage Tags for Metrics` permission.'
+      operationId: DeleteTagConfiguration
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      responses:
+        '204':
+          description: No Content
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Not found
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: Delete a tag configuration
+      tags:
+      - Metrics
+      x-menu-order: 4
+      x-undo:
+        type: idempotent
+      x-unstable: "**Note: Use of this endpoint for count/gauge/rate metric types
+        is only accessible for Metrics without Limits&trade; beta customers.\nIf you\u2019re
+        interested in Metrics without Limits&trade;, please contact your Customer
+        Success Manager.**"
+    get:
+      description: Returns the tag configuration for the given metric name.
+      operationId: ListTagConfigurationByName
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricTagConfigurationResponse'
+          description: Success
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Not Found
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: List tag configuration by name
+      tags:
+      - Metrics
+      x-menu-order: 2
+      x-undo:
+        type: safe
+      x-unstable: "**Note: Use of this endpoint for count/gauge/rate metric types
+        is only accessible for Metrics without Limits&trade; beta customers.\nIf you\u2019re
+        interested in Metrics without Limits&trade;, please contact your Customer
+        Success Manager.**"
+    patch:
+      description: 'Update the tag configuration of a metric or percentile aggregations
+        of a distribution metric. Can only be used with
+
+        application keys from users with the `Manage Tags for Metrics` permission.'
+      operationId: UpdateTagConfiguration
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricTagConfigurationUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricTagConfigurationResponse'
+          description: OK
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Unprocessable Entity
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: Update a tag configuration
+      tags:
+      - Metrics
+      x-codegen-request-body-name: body
+      x-menu-order: 3
+      x-undo:
+        type: idempotent
+      x-unstable: "**Note: Use of this endpoint for count/gauge/rate metric types
+        is only accessible for Metrics without Limits&trade; beta customers.\nIf you\u2019re
+        interested in Metrics without Limits&trade;, please contact your Customer
+        Success Manager.**"
+    post:
+      description: 'Create and define a list of queryable tag keys for an existing
+        count/gauge/rate/distribution metric. Optionally, include percentile aggregations
+        on any distribution metric.
+
+        Can only be used with application keys of users with the `Manage Tags for
+        Metrics` permission.'
+      operationId: CreateTagConfiguration
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetricTagConfigurationCreateRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricTagConfigurationResponse'
+          description: Created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Conflict
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: Create a tag configuration
+      tags:
+      - Metrics
+      x-codegen-request-body-name: body
+      x-given:
+        metric_tag_configuration:
+          parameters:
+          - name: metric_name
+            value: '"{{ unique_alnum }}"'
+          - name: body
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"tags\":[\"app\",
+              \"datacenter\", \"{{ unique_alnum }}\"],\n      \"metric_type\":\"distribution\"\n
+              \    },\n     \"type\": \"manage_tags\",\n     \"id\": \"{{ unique_alnum
+              }}\"\n  }\n}"
+          step: there is a valid "metric_tag_configuration" in the system
+      x-menu-order: 1
+      x-undo:
+        operationId: DeleteTagConfiguration
+        parameters:
+        - name: metric_name
+          source: data.id
+        type: unsafe
+      x-unstable: "**Note: Use of this endpoint for count/gauge/rate metric types
+        is only accessible for Metrics without Limits&trade; beta customers.\nIf you\u2019re
+        interested in Metrics without Limits&trade;, please contact your Customer
+        Success Manager.**"
+  /api/v2/metrics/{metric_name}/volumes:
+    get:
+      description: 'View distinct metrics volumes for the given metric name.
+
+
+        Custom distribution metrics will return both ingested and indexed custom metric
+        volumes.
+
+        For Metrics without Limits&trade; beta customers, all metrics will return
+        both ingested/indexed volumes.
+
+        Custom metrics generated in-app from other products will return `null` for
+        ingested volumes.'
+      operationId: ListVolumesByMetricName
+      parameters:
+      - $ref: '#/components/parameters/MetricName'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricVolumesResponse'
+          description: Success
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Bad Request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Forbidden
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Not Found
+        '429':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIErrorResponse'
+          description: Too Many Requests
+      summary: List distinct metric volumes by metric name
+      tags:
+      - Metrics
+      x-menu-order: 7
+      x-undo:
+        type: safe
   /api/v2/permissions:
     get:
       description: Returns a list of all permissions, including name, description,
@@ -5915,6 +7053,7 @@ paths:
         permission:
           source: data[0]
           step: there is a valid "permission" in the system
+      x-menu-order: 1
       x-undo:
         type: safe
   /api/v2/processes:
@@ -6001,6 +7140,7 @@ paths:
       summary: Get all processes
       tags:
       - Processes
+      x-menu-order: 1
       x-undo:
         type: safe
   /api/v2/roles:
@@ -6044,6 +7184,7 @@ paths:
       summary: List roles
       tags:
       - Roles
+      x-menu-order: 1
       x-undo:
         type: safe
     post:
@@ -6082,9 +7223,10 @@ paths:
         role:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{\
-              \ unique }}\"\n     },\n     \"type\": \"roles\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{
+              unique }}\"\n     },\n     \"type\": \"roles\"\n  }\n}"
           step: there is a valid "role" in the system
+      x-menu-order: 2
       x-undo:
         operationId: DeleteRole
         parameters:
@@ -6116,6 +7258,7 @@ paths:
       tags:
       - Roles
       x-codegen-request-body-name: body
+      x-menu-order: 5
       x-undo:
         type: idempotent
     get:
@@ -6146,6 +7289,7 @@ paths:
       tags:
       - Roles
       x-codegen-request-body-name: body
+      x-menu-order: 3
       x-undo:
         type: safe
     patch:
@@ -6195,6 +7339,7 @@ paths:
       tags:
       - Roles
       x-codegen-request-body-name: body
+      x-menu-order: 4
       x-undo:
         type: idempotent
   /api/v2/roles/{role_id}/permissions:
@@ -6238,6 +7383,7 @@ paths:
       tags:
       - Roles
       x-codegen-request-body-name: body
+      x-menu-order: 8
       x-undo:
         type: idempotent
     get:
@@ -6268,6 +7414,7 @@ paths:
       tags:
       - Roles
       x-codegen-request-body-name: body
+      x-menu-order: 6
       x-undo:
         type: safe
     post:
@@ -6316,9 +7463,10 @@ paths:
           - name: role_id
             source: role.data.id
           - name: body
-            value: "{\n  \"data\": {\n    \"id\": \"{{ permission.id }}\",\n    \"\
-              type\": \"{{ permission.type }}\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"id\": \"{{ permission.id }}\",\n    \"type\":
+              \"{{ permission.type }}\"\n  }\n}"
           step: the "permission" is granted to the "role"
+      x-menu-order: 7
       x-undo:
         type: safe
   /api/v2/roles/{role_id}/users:
@@ -6362,6 +7510,7 @@ paths:
       tags:
       - Roles
       x-codegen-request-body-name: body
+      x-menu-order: 11
       x-undo:
         type: idempotent
     get:
@@ -6411,6 +7560,7 @@ paths:
       summary: Get all users of a role
       tags:
       - Roles
+      x-menu-order: 9
       x-undo:
         type: safe
     post:
@@ -6459,11 +7609,168 @@ paths:
           - name: role_id
             source: role.data.id
           - name: body
-            value: "{\n  \"data\": {\n    \"id\": \"{{ user.data.id }}\",\n    \"\
-              type\": \"{{ user.data.type }}\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"id\": \"{{ user.data.id }}\",\n    \"type\":
+              \"{{ user.data.type }}\"\n  }\n}"
           step: the "user" has the "role"
+      x-menu-order: 10
       x-undo:
         type: safe
+  /api/v2/security_monitoring/configuration/security_filters:
+    get:
+      description: Get the list of configured security filters with their definitions.
+      operationId: ListSecurityFilters
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityFiltersResponse'
+          description: OK
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      summary: Get all security filters
+      tags:
+      - Security Monitoring
+      x-undo:
+        type: safe
+    post:
+      description: 'Create a security filter.
+
+
+        See the [security filter guide](https://docs.datadoghq.com/security_platform/guide/how-to-setup-security-filters-using-security-monitoring-api/)
+
+        for more examples.'
+      operationId: CreateSecurityFilter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityFilterCreateRequest'
+        description: The definition of the new security filter.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityFilterResponse'
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '409':
+          $ref: '#/components/responses/ConflictResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      summary: Create a security filter
+      tags:
+      - Security Monitoring
+      x-codegen-request-body-name: body
+      x-given:
+        security_filter:
+          parameters:
+          - name: body
+            value: "{\n  \"data\": {\n    \"type\": \"security_filters\",\n    \"attributes\":
+              {\n      \"name\": \"{{ unique }}\",\n      \"query\": \"service:{{
+              unique_alnum }}\",\n      \"exclusion_filters\":[\n        {\n          \"name\":
+              \"Exclude logs from staging\",\n          \"query\": \"source:staging\"\n
+              \       }\n     ],\n      \"filtered_data_type\":\"logs\",\n      \"is_enabled\":
+              true\n     }\n  }\n}"
+          step: there is a valid "security_filter" in the system
+      x-undo:
+        operationId: DeleteSecurityFilter
+        parameters:
+        - name: security_filter_id
+          source: data.id
+        type: unsafe
+  /api/v2/security_monitoring/configuration/security_filters/{security_filter_id}:
+    delete:
+      description: Delete a specific security filter.
+      operationId: DeleteSecurityFilter
+      parameters:
+      - $ref: '#/components/parameters/SecurityFilterID'
+      responses:
+        '204':
+          description: OK
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      summary: Delete a security filter
+      tags:
+      - Security Monitoring
+      x-undo:
+        type: idempotent
+    get:
+      description: 'Get the details of a specific security filter.
+
+
+        See the [security filter guide](https://docs.datadoghq.com/security_platform/guide/how-to-setup-security-filters-using-security-monitoring-api/)
+
+        for more examples.'
+      operationId: GetSecurityFilter
+      parameters:
+      - $ref: '#/components/parameters/SecurityFilterID'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityFilterResponse'
+          description: OK
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      summary: Get a security filter
+      tags:
+      - Security Monitoring
+      x-undo:
+        type: safe
+    patch:
+      description: 'Update a specific security filter.
+
+        Returns the security filter object when the request is successful.'
+      operationId: UpdateSecurityFilter
+      parameters:
+      - $ref: '#/components/parameters/SecurityFilterID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecurityFilterUpdateRequest'
+        description: New definition of the security filter.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecurityFilterResponse'
+          description: OK
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '403':
+          $ref: '#/components/responses/NotAuthorizedResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '409':
+          $ref: '#/components/responses/ConcurrentModificationResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequestsResponse'
+      summary: Update a security filter
+      tags:
+      - Security Monitoring
+      x-codegen-request-body-name: body
+      x-undo:
+        type: idempotent
   /api/v2/security_monitoring/rules:
     get:
       description: List rules.
@@ -6483,6 +7790,7 @@ paths:
       summary: List rules
       tags:
       - Security Monitoring
+      x-menu-order: 1
       x-undo:
         type: safe
     post:
@@ -6509,11 +7817,25 @@ paths:
       tags:
       - Security Monitoring
       x-codegen-request-body-name: body
+      x-given:
+        security_rule:
+          parameters:
+          - name: body
+            value: "{\n  \"name\": \"{{ unique }}\",\n  \"queries\": [{\n    \"query\":
+              \"@test:true\",\n    \"aggregation\": \"count\",\n    \"groupByFields\":
+              [],\n    \"distinctFields\": [],\n    \"metric\": \"\"\n  }],\n  \"filters\":
+              [],\n  \"cases\": [{\n    \"name\": \"\",\n    \"status\": \"info\",\n
+              \   \"condition\": \"a > 0\",\n    \"notifications\": []\n  }],\n  \"options\":
+              {\n    \"evaluationWindow\": 900,\n    \"keepAlive\": 3600,\n    \"maxSignalDuration\":
+              86400\n  },\n  \"message\": \"Test rule\",\n  \"tags\": [],\n  \"isEnabled\":
+              true\n}"
+          step: there is a valid "security_rule" in the system
+      x-menu-order: 2
       x-undo:
         operationId: DeleteSecurityMonitoringRule
         parameters:
         - name: rule_id
-          source: data.id
+          source: id
         type: unsafe
   /api/v2/security_monitoring/rules/{rule_id}:
     delete:
@@ -6531,6 +7853,7 @@ paths:
       summary: Delete an existing rule
       tags:
       - Security Monitoring
+      x-menu-order: 5
       x-undo:
         type: idempotent
     get:
@@ -6550,6 +7873,7 @@ paths:
       summary: Get a rule's details
       tags:
       - Security Monitoring
+      x-menu-order: 3
       x-undo:
         type: safe
     put:
@@ -6588,6 +7912,7 @@ paths:
       tags:
       - Security Monitoring
       x-codegen-request-body-name: body
+      x-menu-order: 4
       x-undo:
         type: idempotent
   /api/v2/security_monitoring/signals:
@@ -6661,6 +7986,7 @@ paths:
       summary: Get a quick list of security signals
       tags:
       - Security Monitoring
+      x-menu-order: 7
       x-undo:
         type: safe
       x-unstable: '**Note**: This endpoint is in public beta.
@@ -6695,6 +8021,7 @@ paths:
       tags:
       - Security Monitoring
       x-codegen-request-body-name: body
+      x-menu-order: 6
       x-undo:
         type: safe
       x-unstable: '**Note**: This endpoint is in public beta.
@@ -6767,8 +8094,8 @@ paths:
         service:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{\
-              \ unique }}\"\n     },\n     \"type\": \"services\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{
+              unique }}\"\n     },\n     \"type\": \"services\"\n  }\n}"
           step: there is a valid "service" in the system
       x-undo:
         operationId: DeleteIncidentService
@@ -6940,8 +8267,8 @@ paths:
         team:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{\
-              \ unique }}\"\n     },\n     \"type\": \"teams\"\n  }\n}"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"name\": \"{{
+              unique }}\"\n     },\n     \"type\": \"teams\"\n  }\n}"
           step: there is a valid "team" in the system
       x-undo:
         operationId: DeleteIncidentTeam
@@ -7083,12 +8410,12 @@ paths:
         user_invitation:
           parameters:
           - name: body
-            value: "{\n  \"data\": [\n    {\n      \"relationships\": {\"user\": {\"\
-              data\": {\n        \"id\": \"{{ user.data.id }}\",\n        \"type\"\
-              : \"{{ user.data.type }}\"\n      }}},\n      \"type\": \"user_invitations\"\
-              \n    }\n  ]\n}"
+            value: "{\n  \"data\": [\n    {\n      \"relationships\": {\"user\": {\"data\":
+              {\n        \"id\": \"{{ user.data.id }}\",\n        \"type\": \"{{ user.data.type
+              }}\"\n      }}},\n      \"type\": \"user_invitations\"\n    }\n  ]\n}"
           source: data[0]
           step: the "user" has a "user_invitation"
+      x-menu-order: 8
       x-undo:
         type: safe
   /api/v2/user_invitations/{user_invitation_uuid}:
@@ -7101,6 +8428,7 @@ paths:
         name: user_invitation_uuid
         required: true
         schema:
+          example: 00000000-0000-0000-0000-000000000000
           type: string
       responses:
         '200':
@@ -7125,6 +8453,7 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 9
       x-undo:
         type: safe
   /api/v2/users:
@@ -7149,6 +8478,7 @@ paths:
         required: false
         schema:
           default: name
+          example: name
           type: string
       - description: 'Direction of sort. Options: `asc`, `desc`.'
         in: query
@@ -7171,6 +8501,7 @@ paths:
         name: filter[status]
         required: false
         schema:
+          example: Active
           type: string
       responses:
         '200':
@@ -7195,6 +8526,7 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 1
       x-undo:
         type: safe
     post:
@@ -7233,10 +8565,11 @@ paths:
         user:
           parameters:
           - name: body
-            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"email\": \"{{\
-              \ unique }}@datadoghq.com\"\n     },\n     \"type\": \"users\"\n  }\n\
-              }"
+            value: "{\n  \"data\": {\n    \"attributes\": {\n      \"email\": \"{{
+              unique }}@datadoghq.com\",\n      \"title\": \"user title\"\n     },\n
+              \    \"type\": \"users\"\n  }\n}"
           step: there is a valid "user" in the system
+      x-menu-order: 2
       x-undo:
         operationId: DisableUser
         parameters:
@@ -7270,6 +8603,7 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 5
       x-undo:
         type: idempotent
     get:
@@ -7300,6 +8634,7 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 3
       x-undo:
         type: safe
     patch:
@@ -7350,6 +8685,7 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 4
       x-undo:
         type: idempotent
   /api/v2/users/{user_id}/orgs:
@@ -7384,12 +8720,13 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 6
       x-undo:
         type: safe
   /api/v2/users/{user_id}/permissions:
     get:
-      description: "Get a user permission set. Returns a list of the user\u2019s permissions\n\
-        granted by the associated user's roles."
+      description: "Get a user permission set. Returns a list of the user\u2019s permissions\ngranted
+        by the associated user's roles."
       operationId: ListUserPermissions
       parameters:
       - $ref: '#/components/parameters/UserID'
@@ -7416,6 +8753,7 @@ paths:
       tags:
       - Users
       x-codegen-request-body-name: body
+      x-menu-order: 7
       x-undo:
         type: safe
 security:
@@ -7429,6 +8767,7 @@ servers:
       description: The regional site for our customers.
       enum:
       - datadoghq.com
+      - us3.datadoghq.com
       - datadoghq.eu
       - ddog-gov.com
     subdomain:
@@ -7442,6 +8781,14 @@ servers:
     protocol:
       default: https
       description: The protocol for accessing the API.
+- url: https://{subdomain}.{site}
+  variables:
+    site:
+      default: datadoghq.com
+      description: Any Datadog deployment.
+    subdomain:
+      default: api
+      description: The subdomain where the API is deployed.
 tags:
 - description: 'Interact with your dashboard lists through the API to
 
@@ -7469,42 +8816,7 @@ tags:
     description: Find out more at
     url: https://docs.datadoghq.com/account_management/api-app-keys/
   name: Key Management
-- description: 'Search your logs and send them to your Datadog platform over HTTP.
-    Limits per HTTP request are:
-
-
-    - Maximum content size per payload (uncompressed): 5MB
-
-    - Maximum size for a single log: 1MB
-
-    - Maximum array size if sending multiple logs in an array: 1000 entries
-
-
-    Any log exceeding 1MB is accepted and truncated by Datadog:
-
-    - For a single log request, the API truncates the log at 1MB and returns a 2xx.
-
-    - For a multi-logs request, the API processes all logs, truncates only logs larger
-    than 1MB, and returns a 2xx.
-
-
-    Datadog recommends sending your logs compressed.
-
-    Add the `Content-Encoding: gzip` header to the request when sending compressed
-    logs.
-
-
-    The status codes answered by the HTTP API are:
-
-    - 200: OK
-
-    - 400: Bad request (likely an issue in the payload formatting)
-
-    - 403: Permission issue (likely using an invalid API Key)
-
-    - 413: Payload too large (batch is above 5MB uncompressed)
-
-    - 5xx: Internal error, request should be retried after some time'
+- description: Search your logs and send them to your Datadog platform over HTTP.
   name: Logs
 - description: 'Archives forward all the logs ingested to a cloud storage system.
 
@@ -7522,6 +8834,14 @@ tags:
     description: Find out more at
     url: https://docs.datadoghq.com/logs/logs_to_metrics/
   name: Logs Metrics
+- description: "The metrics endpoint allows you to:\n\n- Post metrics data so it can
+    be graphed on Datadog\u2019s dashboards\n- Query metrics from any time period\n-
+    Modify tag configurations for metrics\n- View tags and volumes for metrics\n\n**Note**:
+    A graph can only contain a set number of points\nand as the timeframe over which
+    a metric is viewed increases,\naggregation between points occurs to stay below
+    that set number.\n\nThe Post, Patch, and Delete `manage_tags` API methods can
+    only be performed by\na user who has the `Manage Tags for Metrics` permission."
+  name: Metrics
 - description: The processes API allows you to query processes data for your organization.
   name: Processes
 - description: 'The Roles API is used to create and manage Datadog roles, what

@@ -31,6 +31,7 @@ module DatadogAPIClient::V1
           :'EventStreamWidgetDefinition',
           :'EventTimelineWidgetDefinition',
           :'FreeTextWidgetDefinition',
+          :'GeomapWidgetDefinition',
           :'GroupWidgetDefinition',
           :'HeatMapWidgetDefinition',
           :'HostMapWidgetDefinition',
@@ -46,7 +47,8 @@ module DatadogAPIClient::V1
           :'ServiceSummaryWidgetDefinition',
           :'TableWidgetDefinition',
           :'TimeseriesWidgetDefinition',
-          :'ToplistWidgetDefinition'
+          :'ToplistWidgetDefinition',
+          :'TreeMapWidgetDefinition'
         ]
       end
 

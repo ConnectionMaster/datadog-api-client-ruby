@@ -19,7 +19,8 @@
 | **type** | [**SyntheticsStepType**](SyntheticsStepType.md) |  | [optional] |
 | **url** | **String** | URL to perform the step against. | [optional] |
 | **value** | **Object** | Value for the step. | [optional] |
-| **warnings** | [**Array&lt;SyntheticsStepDetailWarnings&gt;**](SyntheticsStepDetailWarnings.md) | Warning collected that didn&#39;t failed the step. | [optional] |
+| **vitals_metrics** | [**Array&lt;SyntheticsCoreWebVitals&gt;**](SyntheticsCoreWebVitals.md) | Array of Core Web Vitals metrics for the step. | [optional] |
+| **warnings** | [**Array&lt;SyntheticsStepDetailWarning&gt;**](SyntheticsStepDetailWarning.md) | Warning collected that didn&#39;t failed the step. | [optional] |
 
 ## Example
 
@@ -42,6 +43,7 @@ instance = DatadogAPIClient::V1::SyntheticsStepDetail.new(
   type: null,
   url: null,
   value: null,
+  vitals_metrics: null,
   warnings: null
 )
 ```

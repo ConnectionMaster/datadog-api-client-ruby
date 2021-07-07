@@ -19,7 +19,7 @@ require 'time'
 module DatadogAPIClient::V1
   # Markers allow you to add visual conditional formatting for your graphs.
   class WidgetMarker
-    # Combination of:   - A severity error, warning, ok, or info   - A line type: dashed, solid, or bold 
+    # Combination of:   - A severity error, warning, ok, or info   - A line type: dashed, solid, or bold In this case of a Distribution widget, this can be set to be `x_axis_percentile`. 
     attr_accessor :display_type
 
     # Label to display over the marker.
@@ -188,6 +188,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

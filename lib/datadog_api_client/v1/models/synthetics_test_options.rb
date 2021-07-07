@@ -28,6 +28,9 @@ module DatadogAPIClient::V1
     # For browser test, array with the different device IDs used to run the test.
     attr_accessor :device_ids
 
+    # Whether or not to disable CORS mechanism.
+    attr_accessor :disable_cors
+
     # For API HTTP test, whether or not the test should follow redirects.
     attr_accessor :follow_redirects
 
@@ -37,10 +40,20 @@ module DatadogAPIClient::V1
     # Minimum number of locations in failure required to trigger an alert.
     attr_accessor :min_location_failed
 
+    # The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
+    attr_accessor :monitor_name
+
     attr_accessor :monitor_options
+
+    # Integer from 1 (high) to 5 (low) indicating alert severity.
+    attr_accessor :monitor_priority
+
+    # Prevents saving screenshots of the steps.
+    attr_accessor :no_screenshot
 
     attr_accessor :_retry
 
+    # The frequency at which to run the Synthetic test (in seconds).
     attr_accessor :tick_every
 
     # Attribute mapping from ruby-style variable name to JSON key.
@@ -49,10 +62,14 @@ module DatadogAPIClient::V1
         :'accept_self_signed' => :'accept_self_signed',
         :'allow_insecure' => :'allow_insecure',
         :'device_ids' => :'device_ids',
+        :'disable_cors' => :'disableCors',
         :'follow_redirects' => :'follow_redirects',
         :'min_failure_duration' => :'min_failure_duration',
         :'min_location_failed' => :'min_location_failed',
+        :'monitor_name' => :'monitor_name',
         :'monitor_options' => :'monitor_options',
+        :'monitor_priority' => :'monitor_priority',
+        :'no_screenshot' => :'noScreenshot',
         :'_retry' => :'retry',
         :'tick_every' => :'tick_every'
       }
@@ -69,12 +86,16 @@ module DatadogAPIClient::V1
         :'accept_self_signed' => :'Boolean',
         :'allow_insecure' => :'Boolean',
         :'device_ids' => :'Array<SyntheticsDeviceID>',
+        :'disable_cors' => :'Boolean',
         :'follow_redirects' => :'Boolean',
         :'min_failure_duration' => :'Integer',
         :'min_location_failed' => :'Integer',
+        :'monitor_name' => :'String',
         :'monitor_options' => :'SyntheticsTestOptionsMonitorOptions',
+        :'monitor_priority' => :'Integer',
+        :'no_screenshot' => :'Boolean',
         :'_retry' => :'SyntheticsTestOptionsRetry',
-        :'tick_every' => :'SyntheticsTickInterval'
+        :'tick_every' => :'Integer'
       }
     end
 
@@ -113,6 +134,10 @@ module DatadogAPIClient::V1
         end
       end
 
+      if attributes.key?(:'disable_cors')
+        self.disable_cors = attributes[:'disable_cors']
+      end
+
       if attributes.key?(:'follow_redirects')
         self.follow_redirects = attributes[:'follow_redirects']
       end
@@ -125,8 +150,20 @@ module DatadogAPIClient::V1
         self.min_location_failed = attributes[:'min_location_failed']
       end
 
+      if attributes.key?(:'monitor_name')
+        self.monitor_name = attributes[:'monitor_name']
+      end
+
       if attributes.key?(:'monitor_options')
         self.monitor_options = attributes[:'monitor_options']
+      end
+
+      if attributes.key?(:'monitor_priority')
+        self.monitor_priority = attributes[:'monitor_priority']
+      end
+
+      if attributes.key?(:'no_screenshot')
+        self.no_screenshot = attributes[:'no_screenshot']
       end
 
       if attributes.key?(:'_retry')
@@ -142,13 +179,61 @@ module DatadogAPIClient::V1
     # @return Array for valid properties with the reasons
     def list_invalid_properties
       invalid_properties = Array.new
+      if !@monitor_priority.nil? && @monitor_priority > 5
+        invalid_properties.push('invalid value for "monitor_priority", must be smaller than or equal to 5.')
+      end
+
+      if !@monitor_priority.nil? && @monitor_priority < 1
+        invalid_properties.push('invalid value for "monitor_priority", must be greater than or equal to 1.')
+      end
+
+      if !@tick_every.nil? && @tick_every > 604800
+        invalid_properties.push('invalid value for "tick_every", must be smaller than or equal to 604800.')
+      end
+
+      if !@tick_every.nil? && @tick_every < 30
+        invalid_properties.push('invalid value for "tick_every", must be greater than or equal to 30.')
+      end
+
       invalid_properties
     end
 
     # Check to see if the all the properties in the model are valid
     # @return true if the model is valid
     def valid?
+      return false if !@monitor_priority.nil? && @monitor_priority > 5
+      return false if !@monitor_priority.nil? && @monitor_priority < 1
+      return false if !@tick_every.nil? && @tick_every > 604800
+      return false if !@tick_every.nil? && @tick_every < 30
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] monitor_priority Value to be assigned
+    def monitor_priority=(monitor_priority)
+      if !monitor_priority.nil? && monitor_priority > 5
+        fail ArgumentError, 'invalid value for "monitor_priority", must be smaller than or equal to 5.'
+      end
+
+      if !monitor_priority.nil? && monitor_priority < 1
+        fail ArgumentError, 'invalid value for "monitor_priority", must be greater than or equal to 1.'
+      end
+
+      @monitor_priority = monitor_priority
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] tick_every Value to be assigned
+    def tick_every=(tick_every)
+      if !tick_every.nil? && tick_every > 604800
+        fail ArgumentError, 'invalid value for "tick_every", must be smaller than or equal to 604800.'
+      end
+
+      if !tick_every.nil? && tick_every < 30
+        fail ArgumentError, 'invalid value for "tick_every", must be greater than or equal to 30.'
+      end
+
+      @tick_every = tick_every
     end
 
     # Checks equality by comparing each attribute.
@@ -159,10 +244,14 @@ module DatadogAPIClient::V1
           accept_self_signed == o.accept_self_signed &&
           allow_insecure == o.allow_insecure &&
           device_ids == o.device_ids &&
+          disable_cors == o.disable_cors &&
           follow_redirects == o.follow_redirects &&
           min_failure_duration == o.min_failure_duration &&
           min_location_failed == o.min_location_failed &&
+          monitor_name == o.monitor_name &&
           monitor_options == o.monitor_options &&
+          monitor_priority == o.monitor_priority &&
+          no_screenshot == o.no_screenshot &&
           _retry == o._retry &&
           tick_every == o.tick_every
     end
@@ -176,7 +265,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [accept_self_signed, allow_insecure, device_ids, follow_redirects, min_failure_duration, min_location_failed, monitor_options, _retry, tick_every].hash
+      [accept_self_signed, allow_insecure, device_ids, disable_cors, follow_redirects, min_failure_duration, min_location_failed, monitor_name, monitor_options, monitor_priority, no_screenshot, _retry, tick_every].hash
     end
 
     # Builds the object from hash
@@ -232,6 +321,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

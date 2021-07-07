@@ -25,7 +25,7 @@ module DatadogAPIClient::V1
 
     attr_accessor :event_query
 
-    # List of formulas that operate on queries. This feature is currently in beta.
+    # List of formulas that operate on queries. **This feature is currently in beta.**
     attr_accessor :formulas
 
     attr_accessor :log_query
@@ -40,10 +40,12 @@ module DatadogAPIClient::V1
 
     attr_accessor :process_query
 
+    attr_accessor :profile_metrics_query
+
     # Widget query.
     attr_accessor :q
 
-    # List of queries that can be returned directly or used in formulas. This feature is currently in beta.
+    # List of queries that can be returned directly or used in formulas. **This feature is currently in beta.**
     attr_accessor :queries
 
     attr_accessor :response_format
@@ -66,6 +68,7 @@ module DatadogAPIClient::V1
         :'network_query' => :'network_query',
         :'on_right_yaxis' => :'on_right_yaxis',
         :'process_query' => :'process_query',
+        :'profile_metrics_query' => :'profile_metrics_query',
         :'q' => :'q',
         :'queries' => :'queries',
         :'response_format' => :'response_format',
@@ -88,10 +91,11 @@ module DatadogAPIClient::V1
         :'event_query' => :'LogQueryDefinition',
         :'formulas' => :'Array<WidgetFormula>',
         :'log_query' => :'LogQueryDefinition',
-        :'metadata' => :'Array<TimeseriesWidgetRequestMetadata>',
+        :'metadata' => :'Array<TimeseriesWidgetExpressionAlias>',
         :'network_query' => :'LogQueryDefinition',
         :'on_right_yaxis' => :'Boolean',
         :'process_query' => :'ProcessQueryDefinition',
+        :'profile_metrics_query' => :'LogQueryDefinition',
         :'q' => :'String',
         :'queries' => :'Array<FormulaAndFunctionQueryDefinition>',
         :'response_format' => :'FormulaAndFunctionResponseFormat',
@@ -162,6 +166,10 @@ module DatadogAPIClient::V1
         self.process_query = attributes[:'process_query']
       end
 
+      if attributes.key?(:'profile_metrics_query')
+        self.profile_metrics_query = attributes[:'profile_metrics_query']
+      end
+
       if attributes.key?(:'q')
         self.q = attributes[:'q']
       end
@@ -216,6 +224,7 @@ module DatadogAPIClient::V1
           network_query == o.network_query &&
           on_right_yaxis == o.on_right_yaxis &&
           process_query == o.process_query &&
+          profile_metrics_query == o.profile_metrics_query &&
           q == o.q &&
           queries == o.queries &&
           response_format == o.response_format &&
@@ -233,7 +242,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [apm_query, display_type, event_query, formulas, log_query, metadata, network_query, on_right_yaxis, process_query, q, queries, response_format, rum_query, security_query, style].hash
+      [apm_query, display_type, event_query, formulas, log_query, metadata, network_query, on_right_yaxis, process_query, profile_metrics_query, q, queries, response_format, rum_query, security_query, style].hash
     end
 
     # Builds the object from hash
@@ -289,6 +298,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

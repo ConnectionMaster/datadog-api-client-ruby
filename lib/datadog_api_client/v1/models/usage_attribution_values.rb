@@ -49,16 +49,40 @@ module DatadogAPIClient::V1
     # The custom metrics usage by tag(s).
     attr_accessor :custom_timeseries_usage
 
+    # The percentage of Cloud Workload Security container usage by tag(s)
+    attr_accessor :cws_container_percentage
+
+    # The Cloud Workload Security container usage by tag(s)
+    attr_accessor :cws_container_usage
+
+    # The percentage of Cloud Workload Security host usage by tag(s)
+    attr_accessor :cws_host_percentage
+
+    # The Cloud Workload Security host usage by tag(s)
+    attr_accessor :cws_host_usage
+
     # The percentage of infrastructure host usage by tag(s).
     attr_accessor :infra_host_percentage
 
     # The infrastructure host usage by tag(s).
     attr_accessor :infra_host_usage
 
-    # The percentage of lambda function usage by tag(s).
+    # The percentage of Lambda function usage by tag(s).
+    attr_accessor :lambda_functions_percentage
+
+    # The Lambda function usage by tag(s).
+    attr_accessor :lambda_functions_usage
+
+    # The percentage of Lambda invocation usage by tag(s).
+    attr_accessor :lambda_invocations_percentage
+
+    # The Lambda invocation usage by tag(s).
+    attr_accessor :lambda_invocations_usage
+
+    # The percentage of Lambda function usage by tag(s).  **Note** this field is deprecated. Use lambda_functions_percentage instead.
     attr_accessor :lambda_percentage
 
-    # The lambda function usage by tag(s).
+    # The Lambda function usage by tag(s).  **Note** this field is deprecated. Use lambda_functions_usage instead.
     attr_accessor :lambda_usage
 
     # The percentage of network host usage by tag(s).
@@ -66,6 +90,18 @@ module DatadogAPIClient::V1
 
     # The network host usage by tag(s).
     attr_accessor :npm_host_usage
+
+    # The percentage of profiled containers usage by tag(s).
+    attr_accessor :profiled_containers_percentage
+
+    # The profiled container usage by tag(s).
+    attr_accessor :profiled_containers_usage
+
+    # The percentage of profiled hosts usage by tag(s).
+    attr_accessor :profiled_hosts_percentage
+
+    # The profiled host usage by tag(s).
+    attr_accessor :profiled_hosts_usage
 
     # The percentage of network device usage by tag(s).
     attr_accessor :snmp_percentage
@@ -86,12 +122,24 @@ module DatadogAPIClient::V1
         :'container_usage' => :'container_usage',
         :'custom_timeseries_percentage' => :'custom_timeseries_percentage',
         :'custom_timeseries_usage' => :'custom_timeseries_usage',
+        :'cws_container_percentage' => :'cws_container_percentage',
+        :'cws_container_usage' => :'cws_container_usage',
+        :'cws_host_percentage' => :'cws_host_percentage',
+        :'cws_host_usage' => :'cws_host_usage',
         :'infra_host_percentage' => :'infra_host_percentage',
         :'infra_host_usage' => :'infra_host_usage',
+        :'lambda_functions_percentage' => :'lambda_functions_percentage',
+        :'lambda_functions_usage' => :'lambda_functions_usage',
+        :'lambda_invocations_percentage' => :'lambda_invocations_percentage',
+        :'lambda_invocations_usage' => :'lambda_invocations_usage',
         :'lambda_percentage' => :'lambda_percentage',
         :'lambda_usage' => :'lambda_usage',
         :'npm_host_percentage' => :'npm_host_percentage',
         :'npm_host_usage' => :'npm_host_usage',
+        :'profiled_containers_percentage' => :'profiled_containers_percentage',
+        :'profiled_containers_usage' => :'profiled_containers_usage',
+        :'profiled_hosts_percentage' => :'profiled_hosts_percentage',
+        :'profiled_hosts_usage' => :'profiled_hosts_usage',
         :'snmp_percentage' => :'snmp_percentage',
         :'snmp_usage' => :'snmp_usage'
       }
@@ -115,12 +163,24 @@ module DatadogAPIClient::V1
         :'container_usage' => :'Float',
         :'custom_timeseries_percentage' => :'Float',
         :'custom_timeseries_usage' => :'Float',
+        :'cws_container_percentage' => :'Float',
+        :'cws_container_usage' => :'Float',
+        :'cws_host_percentage' => :'Float',
+        :'cws_host_usage' => :'Float',
         :'infra_host_percentage' => :'Float',
         :'infra_host_usage' => :'Float',
+        :'lambda_functions_percentage' => :'Float',
+        :'lambda_functions_usage' => :'Float',
+        :'lambda_invocations_percentage' => :'Float',
+        :'lambda_invocations_usage' => :'Float',
         :'lambda_percentage' => :'Float',
         :'lambda_usage' => :'Float',
         :'npm_host_percentage' => :'Float',
         :'npm_host_usage' => :'Float',
+        :'profiled_containers_percentage' => :'Float',
+        :'profiled_containers_usage' => :'Float',
+        :'profiled_hosts_percentage' => :'Float',
+        :'profiled_hosts_usage' => :'Float',
         :'snmp_percentage' => :'Float',
         :'snmp_usage' => :'Float'
       }
@@ -187,12 +247,44 @@ module DatadogAPIClient::V1
         self.custom_timeseries_usage = attributes[:'custom_timeseries_usage']
       end
 
+      if attributes.key?(:'cws_container_percentage')
+        self.cws_container_percentage = attributes[:'cws_container_percentage']
+      end
+
+      if attributes.key?(:'cws_container_usage')
+        self.cws_container_usage = attributes[:'cws_container_usage']
+      end
+
+      if attributes.key?(:'cws_host_percentage')
+        self.cws_host_percentage = attributes[:'cws_host_percentage']
+      end
+
+      if attributes.key?(:'cws_host_usage')
+        self.cws_host_usage = attributes[:'cws_host_usage']
+      end
+
       if attributes.key?(:'infra_host_percentage')
         self.infra_host_percentage = attributes[:'infra_host_percentage']
       end
 
       if attributes.key?(:'infra_host_usage')
         self.infra_host_usage = attributes[:'infra_host_usage']
+      end
+
+      if attributes.key?(:'lambda_functions_percentage')
+        self.lambda_functions_percentage = attributes[:'lambda_functions_percentage']
+      end
+
+      if attributes.key?(:'lambda_functions_usage')
+        self.lambda_functions_usage = attributes[:'lambda_functions_usage']
+      end
+
+      if attributes.key?(:'lambda_invocations_percentage')
+        self.lambda_invocations_percentage = attributes[:'lambda_invocations_percentage']
+      end
+
+      if attributes.key?(:'lambda_invocations_usage')
+        self.lambda_invocations_usage = attributes[:'lambda_invocations_usage']
       end
 
       if attributes.key?(:'lambda_percentage')
@@ -209,6 +301,22 @@ module DatadogAPIClient::V1
 
       if attributes.key?(:'npm_host_usage')
         self.npm_host_usage = attributes[:'npm_host_usage']
+      end
+
+      if attributes.key?(:'profiled_containers_percentage')
+        self.profiled_containers_percentage = attributes[:'profiled_containers_percentage']
+      end
+
+      if attributes.key?(:'profiled_containers_usage')
+        self.profiled_containers_usage = attributes[:'profiled_containers_usage']
+      end
+
+      if attributes.key?(:'profiled_hosts_percentage')
+        self.profiled_hosts_percentage = attributes[:'profiled_hosts_percentage']
+      end
+
+      if attributes.key?(:'profiled_hosts_usage')
+        self.profiled_hosts_usage = attributes[:'profiled_hosts_usage']
       end
 
       if attributes.key?(:'snmp_percentage')
@@ -248,12 +356,24 @@ module DatadogAPIClient::V1
           container_usage == o.container_usage &&
           custom_timeseries_percentage == o.custom_timeseries_percentage &&
           custom_timeseries_usage == o.custom_timeseries_usage &&
+          cws_container_percentage == o.cws_container_percentage &&
+          cws_container_usage == o.cws_container_usage &&
+          cws_host_percentage == o.cws_host_percentage &&
+          cws_host_usage == o.cws_host_usage &&
           infra_host_percentage == o.infra_host_percentage &&
           infra_host_usage == o.infra_host_usage &&
+          lambda_functions_percentage == o.lambda_functions_percentage &&
+          lambda_functions_usage == o.lambda_functions_usage &&
+          lambda_invocations_percentage == o.lambda_invocations_percentage &&
+          lambda_invocations_usage == o.lambda_invocations_usage &&
           lambda_percentage == o.lambda_percentage &&
           lambda_usage == o.lambda_usage &&
           npm_host_percentage == o.npm_host_percentage &&
           npm_host_usage == o.npm_host_usage &&
+          profiled_containers_percentage == o.profiled_containers_percentage &&
+          profiled_containers_usage == o.profiled_containers_usage &&
+          profiled_hosts_percentage == o.profiled_hosts_percentage &&
+          profiled_hosts_usage == o.profiled_hosts_usage &&
           snmp_percentage == o.snmp_percentage &&
           snmp_usage == o.snmp_usage
     end
@@ -267,7 +387,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [api_percentage, api_usage, apm_host_percentage, apm_host_usage, browser_percentage, browser_usage, container_percentage, container_usage, custom_timeseries_percentage, custom_timeseries_usage, infra_host_percentage, infra_host_usage, lambda_percentage, lambda_usage, npm_host_percentage, npm_host_usage, snmp_percentage, snmp_usage].hash
+      [api_percentage, api_usage, apm_host_percentage, apm_host_usage, browser_percentage, browser_usage, container_percentage, container_usage, custom_timeseries_percentage, custom_timeseries_usage, cws_container_percentage, cws_container_usage, cws_host_percentage, cws_host_usage, infra_host_percentage, infra_host_usage, lambda_functions_percentage, lambda_functions_usage, lambda_invocations_percentage, lambda_invocations_usage, lambda_percentage, lambda_usage, npm_host_percentage, npm_host_usage, profiled_containers_percentage, profiled_containers_usage, profiled_hosts_percentage, profiled_hosts_usage, snmp_percentage, snmp_usage].hash
     end
 
     # Builds the object from hash
@@ -323,6 +443,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

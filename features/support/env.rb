@@ -6,11 +6,6 @@ SimpleCov.start do
   add_filter "/spec"
 end
 
-if ENV['CI'] == 'true'
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
-
 require 'cucumber'
 require 'datadog_api_client'
 require 'ddtrace'
@@ -20,20 +15,18 @@ require 'vcr'
 
 
 Datadog.configure do |c|
-  c.time_provider = :realtime_with_timecop
-  c.analytics_enabled = true
+  c.time_now_provider = -> { Time.now_without_mock_time }
   c.use :cucumber, {'operation_name': 'test'}
   c.use :ethon, {}
-  c.diagnostics.debug = ENV["DEBUG"].to_s.downcase == "true"
 end
 
 module RecordMode
   def self.true(config)
-    config.default_cassette_options = { :record => :all }
+    config.default_cassette_options = { :record => :all, :allow_unused_http_interactions => false, }
   end
 
   def self.false(config)
-    config.default_cassette_options = { :record => :none }
+    config.default_cassette_options = { :record => :none, :allow_unused_http_interactions => false }
   end
 
   def self.none(config)

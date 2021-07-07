@@ -22,8 +22,14 @@ module DatadogAPIClient::V1
     # Datetime in ISO-8601 format, UTC, precise to month: [YYYY-MM].
     attr_accessor :month
 
+    # The name of the organization.
+    attr_accessor :org_name
+
     # The organization public ID.
     attr_accessor :public_id
+
+    # The source of the usage attribution tag configuration and the selected tags in the format `<source_org_name>:<selected tag 1>-<selected tag 2>-<selected tag 3>`.
+    attr_accessor :tag_config_source
 
     # Usage Summary by tag name.
     attr_accessor :tags
@@ -37,7 +43,9 @@ module DatadogAPIClient::V1
     def self.attribute_map
       {
         :'month' => :'month',
+        :'org_name' => :'org_name',
         :'public_id' => :'public_id',
+        :'tag_config_source' => :'tag_config_source',
         :'tags' => :'tags',
         :'updated_at' => :'updated_at',
         :'values' => :'values'
@@ -53,7 +61,9 @@ module DatadogAPIClient::V1
     def self.openapi_types
       {
         :'month' => :'Time',
+        :'org_name' => :'String',
         :'public_id' => :'String',
+        :'tag_config_source' => :'String',
         :'tags' => :'Hash<String, Array<String>>',
         :'updated_at' => :'String',
         :'values' => :'UsageAttributionValues'
@@ -85,8 +95,16 @@ module DatadogAPIClient::V1
         self.month = attributes[:'month']
       end
 
+      if attributes.key?(:'org_name')
+        self.org_name = attributes[:'org_name']
+      end
+
       if attributes.key?(:'public_id')
         self.public_id = attributes[:'public_id']
+      end
+
+      if attributes.key?(:'tag_config_source')
+        self.tag_config_source = attributes[:'tag_config_source']
       end
 
       if attributes.key?(:'tags')
@@ -123,7 +141,9 @@ module DatadogAPIClient::V1
       return true if self.equal?(o)
       self.class == o.class &&
           month == o.month &&
+          org_name == o.org_name &&
           public_id == o.public_id &&
+          tag_config_source == o.tag_config_source &&
           tags == o.tags &&
           updated_at == o.updated_at &&
           values == o.values
@@ -138,7 +158,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [month, public_id, tags, updated_at, values].hash
+      [month, org_name, public_id, tag_config_source, tags, updated_at, values].hash
     end
 
     # Builds the object from hash
@@ -194,6 +214,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

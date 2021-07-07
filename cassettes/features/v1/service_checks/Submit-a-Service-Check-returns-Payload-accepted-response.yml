@@ -1,0 +1,33 @@
+http_interactions:
+- recorded_at: Thu, 15 Apr 2021 13:01:16 GMT
+  request:
+    body:
+      encoding: UTF-8
+      string: '[{"check":"app.ok","host_name":"host","status":0,"tags":["test:TestSubmitaServiceCheckreturnsPayloadacceptedresponse1618491676"]}]'
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '16'
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - text/json
+      Date:
+      - Thu, 15 Apr 2021 13:01:16 GMT
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+    method: POST
+    uri: https://api.datadoghq.com/api/v1/check_run
+  response:
+    body:
+      encoding: UTF-8
+      string: '{"status": "ok"}'
+    status:
+      code: 202
+      message: Accepted
+recorded_with: VCR 6.0.0

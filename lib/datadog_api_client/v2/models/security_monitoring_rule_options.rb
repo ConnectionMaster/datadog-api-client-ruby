@@ -19,18 +19,24 @@ require 'time'
 module DatadogAPIClient::V2
   # Options on rules.
   class SecurityMonitoringRuleOptions
+    attr_accessor :detection_method
+
     attr_accessor :evaluation_window
 
     attr_accessor :keep_alive
 
     attr_accessor :max_signal_duration
 
+    attr_accessor :new_value_options
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
+        :'detection_method' => :'detectionMethod',
         :'evaluation_window' => :'evaluationWindow',
         :'keep_alive' => :'keepAlive',
-        :'max_signal_duration' => :'maxSignalDuration'
+        :'max_signal_duration' => :'maxSignalDuration',
+        :'new_value_options' => :'newValueOptions'
       }
     end
 
@@ -42,9 +48,11 @@ module DatadogAPIClient::V2
     # Attribute type mapping.
     def self.openapi_types
       {
+        :'detection_method' => :'SecurityMonitoringRuleDetectionMethod',
         :'evaluation_window' => :'SecurityMonitoringRuleEvaluationWindow',
         :'keep_alive' => :'SecurityMonitoringRuleKeepAlive',
-        :'max_signal_duration' => :'SecurityMonitoringRuleMaxSignalDuration'
+        :'max_signal_duration' => :'SecurityMonitoringRuleMaxSignalDuration',
+        :'new_value_options' => :'SecurityMonitoringRuleNewValueOptions'
       }
     end
 
@@ -69,6 +77,10 @@ module DatadogAPIClient::V2
         h[k.to_sym] = v
       }
 
+      if attributes.key?(:'detection_method')
+        self.detection_method = attributes[:'detection_method']
+      end
+
       if attributes.key?(:'evaluation_window')
         self.evaluation_window = attributes[:'evaluation_window']
       end
@@ -79,6 +91,10 @@ module DatadogAPIClient::V2
 
       if attributes.key?(:'max_signal_duration')
         self.max_signal_duration = attributes[:'max_signal_duration']
+      end
+
+      if attributes.key?(:'new_value_options')
+        self.new_value_options = attributes[:'new_value_options']
       end
     end
 
@@ -100,9 +116,11 @@ module DatadogAPIClient::V2
     def ==(o)
       return true if self.equal?(o)
       self.class == o.class &&
+          detection_method == o.detection_method &&
           evaluation_window == o.evaluation_window &&
           keep_alive == o.keep_alive &&
-          max_signal_duration == o.max_signal_duration
+          max_signal_duration == o.max_signal_duration &&
+          new_value_options == o.new_value_options
     end
 
     # @see the `==` method
@@ -114,7 +132,7 @@ module DatadogAPIClient::V2
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [evaluation_window, keep_alive, max_signal_duration].hash
+      [detection_method, evaluation_window, keep_alive, max_signal_duration, new_value_options].hash
     end
 
     # Builds the object from hash
@@ -170,6 +188,9 @@ module DatadogAPIClient::V2
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

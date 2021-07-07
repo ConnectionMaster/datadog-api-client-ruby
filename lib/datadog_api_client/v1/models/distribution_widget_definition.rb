@@ -19,13 +19,16 @@ require 'time'
 module DatadogAPIClient::V1
   # The Distribution visualization is another way of showing metrics aggregated across one or several tags, such as hosts. Unlike the heat map, a distribution graph’s x-axis is quantity rather than time.
   class DistributionWidgetDefinition
-    # Available legend sizes for a widget. Should be one of \"0\", \"2\", \"4\", \"8\", \"16\", or \"auto\".
+    # (Deprecated) The widget legend was replaced by a tooltip and sidebar.
     attr_accessor :legend_size
+
+    # List of markers.
+    attr_accessor :markers
 
     # Array of one request object to display in the widget.  See the dedicated [Request JSON schema documentation](https://docs.datadoghq.com/dashboards/graphing_json/request_json)  to learn how to build the `REQUEST_SCHEMA`.
     attr_accessor :requests
 
-    # Whether or not to display the legend on this widget.
+    # (Deprecated) The widget legend was replaced by a tooltip and sidebar.
     attr_accessor :show_legend
 
     attr_accessor :time
@@ -40,17 +43,24 @@ module DatadogAPIClient::V1
 
     attr_accessor :type
 
+    attr_accessor :xaxis
+
+    attr_accessor :yaxis
+
     # Attribute mapping from ruby-style variable name to JSON key.
     def self.attribute_map
       {
         :'legend_size' => :'legend_size',
+        :'markers' => :'markers',
         :'requests' => :'requests',
         :'show_legend' => :'show_legend',
         :'time' => :'time',
         :'title' => :'title',
         :'title_align' => :'title_align',
         :'title_size' => :'title_size',
-        :'type' => :'type'
+        :'type' => :'type',
+        :'xaxis' => :'xaxis',
+        :'yaxis' => :'yaxis'
       }
     end
 
@@ -63,13 +73,16 @@ module DatadogAPIClient::V1
     def self.openapi_types
       {
         :'legend_size' => :'String',
+        :'markers' => :'Array<WidgetMarker>',
         :'requests' => :'Array<DistributionWidgetRequest>',
         :'show_legend' => :'Boolean',
         :'time' => :'WidgetTime',
         :'title' => :'String',
         :'title_align' => :'WidgetTextAlign',
         :'title_size' => :'String',
-        :'type' => :'DistributionWidgetDefinitionType'
+        :'type' => :'DistributionWidgetDefinitionType',
+        :'xaxis' => :'DistributionWidgetXAxis',
+        :'yaxis' => :'DistributionWidgetYAxis'
       }
     end
 
@@ -96,6 +109,12 @@ module DatadogAPIClient::V1
 
       if attributes.key?(:'legend_size')
         self.legend_size = attributes[:'legend_size']
+      end
+
+      if attributes.key?(:'markers')
+        if (value = attributes[:'markers']).is_a?(Array)
+          self.markers = value
+        end
       end
 
       if attributes.key?(:'requests')
@@ -129,6 +148,14 @@ module DatadogAPIClient::V1
       else
         self.type = 'distribution'
       end
+
+      if attributes.key?(:'xaxis')
+        self.xaxis = attributes[:'xaxis']
+      end
+
+      if attributes.key?(:'yaxis')
+        self.yaxis = attributes[:'yaxis']
+      end
     end
 
     # Show invalid properties with the reasons. Usually used together with valid?
@@ -137,6 +164,14 @@ module DatadogAPIClient::V1
       invalid_properties = Array.new
       if @requests.nil?
         invalid_properties.push('invalid value for "requests", requests cannot be nil.')
+      end
+
+      if @requests.length > 1
+        invalid_properties.push('invalid value for "requests", number of items must be less than or equal to 1.')
+      end
+
+      if @requests.length < 1
+        invalid_properties.push('invalid value for "requests", number of items must be greater than or equal to 1.')
       end
 
       if @type.nil?
@@ -150,8 +185,28 @@ module DatadogAPIClient::V1
     # @return true if the model is valid
     def valid?
       return false if @requests.nil?
+      return false if @requests.length > 1
+      return false if @requests.length < 1
       return false if @type.nil?
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] requests Value to be assigned
+    def requests=(requests)
+      if requests.nil?
+        fail ArgumentError, 'requests cannot be nil'
+      end
+
+      if requests.length > 1
+        fail ArgumentError, 'invalid value for "requests", number of items must be less than or equal to 1.'
+      end
+
+      if requests.length < 1
+        fail ArgumentError, 'invalid value for "requests", number of items must be greater than or equal to 1.'
+      end
+
+      @requests = requests
     end
 
     # Checks equality by comparing each attribute.
@@ -160,13 +215,16 @@ module DatadogAPIClient::V1
       return true if self.equal?(o)
       self.class == o.class &&
           legend_size == o.legend_size &&
+          markers == o.markers &&
           requests == o.requests &&
           show_legend == o.show_legend &&
           time == o.time &&
           title == o.title &&
           title_align == o.title_align &&
           title_size == o.title_size &&
-          type == o.type
+          type == o.type &&
+          xaxis == o.xaxis &&
+          yaxis == o.yaxis
     end
 
     # @see the `==` method
@@ -178,7 +236,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [legend_size, requests, show_legend, time, title, title_align, title_size, type].hash
+      [legend_size, markers, requests, show_legend, time, title, title_align, title_size, type, xaxis, yaxis].hash
     end
 
     # Builds the object from hash
@@ -234,6 +292,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

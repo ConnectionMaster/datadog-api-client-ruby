@@ -25,6 +25,11 @@ module DatadogAPIClient::V1
     # List of widget events.
     attr_accessor :events
 
+    # Columns displayed in the legend.
+    attr_accessor :legend_columns
+
+    attr_accessor :legend_layout
+
     # Available legend sizes for a widget. Should be one of \"0\", \"2\", \"4\", \"8\", \"16\", or \"auto\".
     attr_accessor :legend_size
 
@@ -58,6 +63,8 @@ module DatadogAPIClient::V1
       {
         :'custom_links' => :'custom_links',
         :'events' => :'events',
+        :'legend_columns' => :'legend_columns',
+        :'legend_layout' => :'legend_layout',
         :'legend_size' => :'legend_size',
         :'markers' => :'markers',
         :'requests' => :'requests',
@@ -82,6 +89,8 @@ module DatadogAPIClient::V1
       {
         :'custom_links' => :'Array<WidgetCustomLink>',
         :'events' => :'Array<WidgetEvent>',
+        :'legend_columns' => :'Array<TimeseriesWidgetLegendColumn>',
+        :'legend_layout' => :'TimeseriesWidgetLegendLayout',
         :'legend_size' => :'String',
         :'markers' => :'Array<WidgetMarker>',
         :'requests' => :'Array<TimeseriesWidgetRequest>',
@@ -127,6 +136,16 @@ module DatadogAPIClient::V1
         if (value = attributes[:'events']).is_a?(Array)
           self.events = value
         end
+      end
+
+      if attributes.key?(:'legend_columns')
+        if (value = attributes[:'legend_columns']).is_a?(Array)
+          self.legend_columns = value
+        end
+      end
+
+      if attributes.key?(:'legend_layout')
+        self.legend_layout = attributes[:'legend_layout']
       end
 
       if attributes.key?(:'legend_size')
@@ -188,6 +207,10 @@ module DatadogAPIClient::V1
         invalid_properties.push('invalid value for "requests", requests cannot be nil.')
       end
 
+      if @requests.length < 1
+        invalid_properties.push('invalid value for "requests", number of items must be greater than or equal to 1.')
+      end
+
       if @type.nil?
         invalid_properties.push('invalid value for "type", type cannot be nil.')
       end
@@ -199,8 +222,23 @@ module DatadogAPIClient::V1
     # @return true if the model is valid
     def valid?
       return false if @requests.nil?
+      return false if @requests.length < 1
       return false if @type.nil?
       true
+    end
+
+    # Custom attribute writer method with validation
+    # @param [Object] requests Value to be assigned
+    def requests=(requests)
+      if requests.nil?
+        fail ArgumentError, 'requests cannot be nil'
+      end
+
+      if requests.length < 1
+        fail ArgumentError, 'invalid value for "requests", number of items must be greater than or equal to 1.'
+      end
+
+      @requests = requests
     end
 
     # Checks equality by comparing each attribute.
@@ -210,6 +248,8 @@ module DatadogAPIClient::V1
       self.class == o.class &&
           custom_links == o.custom_links &&
           events == o.events &&
+          legend_columns == o.legend_columns &&
+          legend_layout == o.legend_layout &&
           legend_size == o.legend_size &&
           markers == o.markers &&
           requests == o.requests &&
@@ -232,7 +272,7 @@ module DatadogAPIClient::V1
     # Calculates hash code according to all attributes.
     # @return [Integer] Hash code
     def hash
-      [custom_links, events, legend_size, markers, requests, right_yaxis, show_legend, time, title, title_align, title_size, type, yaxis].hash
+      [custom_links, events, legend_columns, legend_layout, legend_size, markers, requests, right_yaxis, show_legend, time, title, title_align, title_size, type, yaxis].hash
     end
 
     # Builds the object from hash
@@ -288,6 +328,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

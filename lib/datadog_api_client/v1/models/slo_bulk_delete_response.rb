@@ -41,7 +41,7 @@ module DatadogAPIClient::V1
     def self.openapi_types
       {
         :'data' => :'SLOBulkDeleteResponseData',
-        :'errors' => :'Array<SLOBulkDeleteResponseErrors>'
+        :'errors' => :'Array<SLOBulkDeleteError>'
       }
     end
 
@@ -164,6 +164,9 @@ module DatadogAPIClient::V1
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

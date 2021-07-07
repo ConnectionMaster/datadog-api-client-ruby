@@ -15,10 +15,9 @@ require 'ddtrace'
 require 'webmock/rspec'
 
 Datadog.configure do |c|
-  c.analytics_enabled = true
+  c.tracer(writer_options: { buffer_size: 5000, flush_interval: 0.1 })
   c.use :ethon, {}
   c.use :rspec, {}
-  c.diagnostics.debug = (!ENV["DEBUG"].nil? and ENV["DEBUG"] != false)
 end
 
 
@@ -100,11 +99,21 @@ RSpec.configure do |config|
     m = example.metadata[:file_path].match /spec\/v(?<version>\d+)\/.*/
     @api_version = m[:version]
     api = Object.const_get("DatadogAPIClient::V#{@api_version}")
-    @configuration = api.const_get("Configuration").new
-    @configuration.api_key["apiKeyAuth"] = ENV["DD_TEST_CLIENT_API_KEY"]
-    @configuration.api_key["appKeyAuth"] = ENV["DD_TEST_CLIENT_APP_KEY"]
-    @configuration.debugging = (!ENV["DEBUG"].nil? and ENV["DEBUG"] != false)
-    @api_client = api.const_get("ApiClient").new @configuration
+    @configuration = api::Configuration.new
+    @configuration.api_key = ENV["DD_TEST_CLIENT_API_KEY"]
+    @configuration.application_key = ENV["DD_TEST_CLIENT_APP_KEY"]
+    @configuration.debugging = (!ENV["DEBUG"].nil? and ENV["DEBUG"] != "false")
+    @configuration.configure do |c|
+      if ENV.key? 'DD_TEST_SITE' then
+        c.server_index = 2
+        c.server_variables[:site] = ENV['DD_TEST_SITE']
+      end
+    end
+    @api_client = api::APIClient.new @configuration
+  end
+
+  config.after(:suite) do
+    Datadog.tracer.writer.worker.callback_traces
   end
 
   config.example_status_persistence_file_path = 'failed.txt'

@@ -19,7 +19,7 @@ require 'time'
 module DatadogAPIClient::V2
   # List of rules.
   class SecurityMonitoringListRulesResponse
-    # TODO.
+    # Array containing the list of rules.
     attr_accessor :data
 
     attr_accessor :meta
@@ -164,6 +164,9 @@ module DatadogAPIClient::V2
         end
       when :Object
         # generic object (usually a Hash), return directly
+        value
+      when :Array
+        # generic array, return directly
         value
       when /\AArray<(?<inner_type>.+)>\z/
         inner_type = Regexp.last_match[:inner_type]

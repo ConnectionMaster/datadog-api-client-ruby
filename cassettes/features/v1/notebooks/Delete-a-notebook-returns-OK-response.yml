@@ -1,0 +1,143 @@
+http_interactions:
+- recorded_at: Tue, 11 May 2021 09:42:54 GMT
+  request:
+    body:
+      encoding: UTF-8
+      string: '{"data":{"attributes":{"cells":[{"attributes":{"definition":{"text":"#
+        Test-Delete_a_notebook_returns_OK_response-1620726174 notebook text","type":"markdown"}},"type":"notebook_cells"}],"name":"Test-Delete_a_notebook_returns_OK_response-1620726174","time":{"live_span":"1h"}},"type":"notebooks"}}'
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - close
+      Content-Length:
+      - '672'
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 May 2021 09:42:54 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - fIO2C4qGDheGHy4YbS+r3a3CXbh4cbRo7roILOimQyiHGjQdOat0cIpWCkupM1uX
+      X-Dd-Version:
+      - '35.4503153'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - '30'
+      X-Ratelimit-Period:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '29'
+      X-Ratelimit-Reset:
+      - '6'
+    method: POST
+    uri: https://api.datadoghq.com/api/v1/notebooks
+  response:
+    body:
+      encoding: UTF-8
+      string: '{"data":{"type":"notebooks","id":774055,"attributes":{"name":"Test-Delete_a_notebook_returns_OK_response-1620726174","cells":[{"attributes":{"definition":{"text":"#
+        Test-Delete_a_notebook_returns_OK_response-1620726174 notebook text","type":"markdown"}},"type":"notebook_cells","id":"j6gwpoqh"}],"time":{"live_span":"1h"},"status":"published","modified":"2021-05-11T09:42:54.457909+00:00","created":"2021-05-11T09:42:54.457909+00:00","author":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","icon":"https://secure.gravatar.com/avatar/28a16dfe36e73b60c1d55872cb0f1172?s=48&d=retro","title":null,"verified":true,"disabled":false,"status":"Active"}}}}'
+    status:
+      code: 200
+      message: OK
+- recorded_at: Tue, 11 May 2021 09:42:54 GMT
+  request:
+    body: null
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - close
+      Content-Length:
+      - '0'
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 May 2021 09:42:54 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Debug:
+      - l8RQo2maZqJf6GFThBbKNE6dvthz6njusVtau3dPXJWL2RLFoN81H+BLPB/1xgs1
+      X-Dd-Version:
+      - '35.4503153'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - '30'
+      X-Ratelimit-Period:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '28'
+      X-Ratelimit-Reset:
+      - '6'
+    method: DELETE
+    uri: https://api.datadoghq.com/api/v1/notebooks/774055
+  response:
+    body:
+      encoding: UTF-8
+      string: ''
+    status:
+      code: 204
+      message: No Content
+- recorded_at: Tue, 11 May 2021 09:42:54 GMT
+  request:
+    body: null
+    headers:
+      Cache-Control:
+      - no-cache
+      Connection:
+      - close
+      Content-Length:
+      - '34'
+      Content-Security-Policy:
+      - frame-ancestors 'self'; report-uri https://api.datadoghq.com/csp-report
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 11 May 2021 09:42:55 GMT
+      Pragma:
+      - no-cache
+      Strict-Transport-Security:
+      - max-age=15724800;
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Dd-Version:
+      - '35.4503153'
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Ratelimit-Limit:
+      - '30'
+      X-Ratelimit-Period:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '27'
+      X-Ratelimit-Reset:
+      - '5'
+    method: DELETE
+    uri: https://api.datadoghq.com/api/v1/notebooks/774055
+  response:
+    body:
+      encoding: UTF-8
+      string: '{"errors": ["Notebook not found"]}'
+    status:
+      code: 404
+      message: Not Found
+recorded_with: VCR 6.0.0
