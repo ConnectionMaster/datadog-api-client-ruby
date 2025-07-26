@@ -99,7 +99,9 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/datadog_api_client/v2/models/dataset.rb</dd>
+    <dd>lib/datadog_api_client/v2/models/dataset.rb<span class="defines">,<br />
+  lib/datadog_api_client/v2/models/dataset.rb</span>
+</dd>
   </dl>
   
 </div>
@@ -107,6 +109,28 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     <p>Dataset object.</p>
+
+<h3 id="datasets-constraints">Datasets Constraints</h3>
+
+<ul>
+<li><p><strong>Tag Limit per Dataset</strong>:</p>
+
+<ul>
+<li>Each restricted dataset supports a maximum of 10 key:value pairs per product.</li>
+</ul></li>
+<li><p><strong>Tag Key Rules per Telemetry Type</strong>:</p>
+
+<ul>
+<li>Only one tag key or attribute may be used to define access within a single telemetry type.</li>
+<li>The same or different tag key may be used across different telemetry types.</li>
+</ul></li>
+<li><p><strong>Tag Value Uniqueness</strong>:</p>
+
+<ul>
+<li>Tag values must be unique within a single dataset.</li>
+<li>A tag value used in one dataset cannot be reused in another dataset of the same telemetry type.</li>
+</ul></li>
+</ul>
 
 
   </div>
@@ -423,7 +447,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jul 15 04:45:01 2025 by
+  Generated on Sat Jul 26 01:21:20 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-2.7.8).
 </div>
