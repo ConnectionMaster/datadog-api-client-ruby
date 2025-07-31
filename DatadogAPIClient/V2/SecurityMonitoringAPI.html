@@ -11766,6 +11766,7 @@ for more examples.</p>
 <li><code>external_id</code>: The resource external ID related to the finding.</li>
 <li><code>description</code>: The description and remediation steps for the finding.</li>
 <li><code>datadog_link</code>: The Datadog relative link for the finding.</li>
+<li><code>ip_addresses</code>: The list of private IP addresses for the resource related to the finding.</li>
 </ul>
 
 <h3 id="response">Response</h3>
@@ -11917,6 +11918,18 @@ for more examples.</p>
           </span>
           
             &mdash; <div class='inline'><p>Return only findings for the specified resource type.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:filter_resource_id</span>
+          <span class="type">(<tt>String</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>Return only findings for the specified resource id.</p>
 </div>
           
         </li>
@@ -18516,7 +18529,7 @@ the tags (default tags cannot be removed).</p>
 </div>
 
       <div id="footer">
-  Generated on Mon Jul 28 23:46:14 2025 by
+  Generated on Thu Jul 31 16:15:20 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-2.7.8).
 </div>
