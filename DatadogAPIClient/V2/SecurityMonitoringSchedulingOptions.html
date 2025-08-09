@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Class: DatadogAPIClient::V2::ChangeEventAttributesImpactedResourcesItem
+  Class: DatadogAPIClient::V2::SecurityMonitoringSchedulingOptions
   
     &mdash; datadog-api-client 2.39.0 documentation
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../css/common.css" type="text/css" />
 
 <script type="text/javascript">
-  pathId = "DatadogAPIClient::V2::ChangeEventAttributesImpactedResourcesItem";
+  pathId = "DatadogAPIClient::V2::SecurityMonitoringSchedulingOptions";
   relpath = '../../';
 </script>
 
@@ -36,10 +36,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../../_index.html">Index (C)</a> &raquo;
+    <a href="../../_index.html">Index (S)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../../DatadogAPIClient.html" title="DatadogAPIClient (module)">DatadogAPIClient</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../V2.html" title="DatadogAPIClient::V2 (module)">V2</a></span></span>
      &raquo; 
-    <span class="title">ChangeEventAttributesImpactedResourcesItem</span>
+    <span class="title">SecurityMonitoringSchedulingOptions</span>
   
 </div>
 
@@ -59,7 +59,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Class: DatadogAPIClient::V2::ChangeEventAttributesImpactedResourcesItem
+      <div id="content"><h1>Class: DatadogAPIClient::V2::SecurityMonitoringSchedulingOptions
   
   
   
@@ -74,7 +74,7 @@
         <ul class="fullTree">
           <li>Object</li>
           
-            <li class="next">DatadogAPIClient::V2::ChangeEventAttributesImpactedResourcesItem</li>
+            <li class="next">DatadogAPIClient::V2::SecurityMonitoringSchedulingOptions</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -99,14 +99,14 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/datadog_api_client/v2/models/change_event_attributes_impacted_resources_item.rb</dd>
+    <dd>lib/datadog_api_client/v2/models/security_monitoring_scheduling_options.rb</dd>
   </dl>
   
 </div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>A uniquely identified resource.</p>
+    <p>Options for scheduled rules. When this field is present, the rule runs based on the schedule. When absent, it runs real-time on ingested logs.</p>
 
 
   </div>
@@ -150,7 +150,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#name-instance_method" title="#name (instance method)">#<strong>name</strong>  &#x21d2; Object </a>
+      <a href="#rrule-instance_method" title="#rrule (instance method)">#<strong>rrule</strong>  &#x21d2; Object </a>
     
 
     
@@ -167,7 +167,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>The name of the impacted resource.</p>
+    <span class="summary_desc"><div class='inline'><p>Schedule for the rule queries, written in RRULE syntax.</p>
 </div></span>
   
 </li>
@@ -176,7 +176,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#type-instance_method" title="#type (instance method)">#<strong>type</strong>  &#x21d2; Object </a>
+      <a href="#start-instance_method" title="#start (instance method)">#<strong>start</strong>  &#x21d2; Object </a>
     
 
     
@@ -193,7 +193,33 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>The type of the impacted resource.</p>
+    <span class="summary_desc"><div class='inline'><p>Start date for the schedule, in ISO 8601 format without timezone.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#timezone-instance_method" title="#timezone (instance method)">#<strong>timezone</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Time zone of the start date, in the <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">tz database</a> format.</p>
 </div></span>
   
 </li>
@@ -246,12 +272,12 @@
       <pre class="lines">
 
 
-30
-31
-32</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/change_event_attributes_impacted_resources_item.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/security_monitoring_scheduling_options.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_additional_properties'>additional_properties</span>
   <span class='ivar'>@additional_properties</span>
@@ -262,11 +288,11 @@
 </div>
     
       
-      <span id="name=-instance_method"></span>
+      <span id="rrule=-instance_method"></span>
       <div class="method_details ">
-  <h3 class="signature " id="name-instance_method">
+  <h3 class="signature " id="rrule-instance_method">
   
-    #<strong>name</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>rrule</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -274,7 +300,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>The name of the impacted resource.</p>
+    <p>Schedule for the rule queries, written in RRULE syntax. See <a href="https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html">RFC</a> for syntax reference.</p>
 
 
   </div>
@@ -293,10 +319,10 @@
 27</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/change_event_attributes_impacted_resources_item.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/security_monitoring_scheduling_options.rb', line 25</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_name'>name</span>
-  <span class='ivar'>@name</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_rrule'>rrule</span>
+  <span class='ivar'>@rrule</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -304,11 +330,11 @@
 </div>
     
       
-      <span id="type=-instance_method"></span>
+      <span id="start=-instance_method"></span>
       <div class="method_details ">
-  <h3 class="signature " id="type-instance_method">
+  <h3 class="signature " id="start-instance_method">
   
-    #<strong>type</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>start</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -316,7 +342,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>The type of the impacted resource.</p>
+    <p>Start date for the schedule, in ISO 8601 format without timezone.</p>
 
 
   </div>
@@ -335,10 +361,52 @@
 30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/change_event_attributes_impacted_resources_item.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/security_monitoring_scheduling_options.rb', line 28</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_type'>type</span>
-  <span class='ivar'>@type</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
+  <span class='ivar'>@start</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="timezone=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="timezone-instance_method">
+  
+    #<strong>timezone</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Time zone of the start date, in the <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">tz database</a> format.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/security_monitoring_scheduling_options.rb', line 31</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_timezone'>timezone</span>
+  <span class='ivar'>@timezone</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
