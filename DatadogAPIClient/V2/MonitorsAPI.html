@@ -3094,6 +3094,54 @@
     <ul class="option">
       
         <li>
+          <span class="name">:page</span>
+          <span class="type">(<tt>Integer</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>The page to start paginating from. If <code>page</code> is not specified, the argument defaults to the first page.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:per_page</span>
+          <span class="type">(<tt>Integer</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>The number of rules to return per page. If <code>per_page</code> is not specified, the argument defaults to 100.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:sort</span>
+          <span class="type">(<tt>String</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>String for sort order, composed of field and sort order separated by a colon, for example <code>name:asc</code>. Supported sort directions: <code>asc</code>, <code>desc</code>. Supported fields: <code>name</code>, <code>created_at</code>.</p>
+</div>
+          
+        </li>
+      
+        <li>
+          <span class="name">:filters</span>
+          <span class="type">(<tt>String</tt>)</span>
+          <span class="default">
+            
+          </span>
+          
+            &mdash; <div class='inline'><p>JSON-encoded filter object. Supported keys: * <code>text</code>: Free-text query matched against rule name, tags, and recipients. * <code>tags</code>: Array of strings. Return rules that have any of these tags. * <code>recipients</code>: Array of strings. Return rules that have any of these recipients.</p>
+</div>
+          
+        </li>
+      
+        <li>
           <span class="name">:include</span>
           <span class="type">(<tt>String</tt>)</span>
           <span class="default">
@@ -5265,7 +5313,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Sep  5 04:04:08 2025 by
+  Generated on Fri Sep  5 21:39:25 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-2.7.8).
 </div>
