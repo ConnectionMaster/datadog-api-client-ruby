@@ -6,7 +6,7 @@
 <title>
   Class: DatadogAPIClient::V2::EscalationPolicyStepTarget
   
-    &mdash; datadog-api-client 2.39.0 documentation
+    &mdash; datadog-api-client 2.45.0 documentation
   
 </title>
 
@@ -106,7 +106,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>Defines a single escalation target within a step for an escalation policy creation request. Contains <code>id</code> and <code>type</code>.</p>
+    <p>Defines a single escalation target within a step for an escalation policy creation request. Contains <code>id</code>, <code>type</code>, and optional <code>config</code>.</p>
 
 
   </div>
@@ -142,6 +142,32 @@
 
   
     <span class="summary_desc"><div class='inline'><p>Returns the value of attribute additional_properties.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#config-instance_method" title="#config (instance method)">#<strong>config</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Configuration for an escalation target, such as schedule position.</p>
 </div></span>
   
 </li>
@@ -262,6 +288,48 @@
 </div>
     
       
+      <span id="config=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="config-instance_method">
+  
+    #<strong>config</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Configuration for an escalation target, such as schedule position.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/escalation_policy_step_target.rb', line 25</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_config'>config</span>
+  <span class='ivar'>@config</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
       <span id="id=-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="id-instance_method">
@@ -351,7 +419,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jul 15 04:45:34 2025 by
+  Generated on Thu Dec  4 02:52:31 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-2.7.8).
 </div>
