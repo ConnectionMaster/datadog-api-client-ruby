@@ -99,7 +99,9 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb</dd>
+    <dd>lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb<span class="defines">,<br />
+  lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb</span>
+</dd>
   </dl>
   
 </div>
@@ -108,6 +110,8 @@
   <div class="discussion">
     <p>The <code>generate_datadog_metrics</code> processor creates custom metrics from logs and sends them to Datadog.
 Metrics can be counters, gauges, or distributions and optionally grouped by log fields.</p>
+
+<p><strong>Supported pipeline types:</strong> logs</p>
 
 
   </div>
@@ -196,7 +200,7 @@ Metrics can be counters, gauges, or distributions and optionally grouped by log 
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Whether this processor is enabled.</p>
+    <span class="summary_desc"><div class='inline'><p>Indicates whether the processor is enabled.</p>
 </div></span>
   
 </li>
@@ -427,12 +431,12 @@ Metrics can be counters, gauges, or distributions and optionally grouped by log 
       <pre class="lines">
 
 
-26
-27
-28</pre>
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_display_name'>display_name</span>
   <span class='ivar'>@display_name</span>
@@ -455,7 +459,7 @@ Metrics can be counters, gauges, or distributions and optionally grouped by log 
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Whether this processor is enabled.</p>
+    <p>Indicates whether the processor is enabled.</p>
 
 
   </div>
@@ -469,12 +473,12 @@ Metrics can be counters, gauges, or distributions and optionally grouped by log 
       <pre class="lines">
 
 
-29
-30
-31</pre>
+31
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_generate_metrics_processor.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enabled'>enabled</span>
   <span class='ivar'>@enabled</span>
@@ -700,7 +704,7 @@ Metrics can be counters, gauges, or distributions and optionally grouped by log 
 </div>
 
       <div id="footer">
-  Generated on Wed Jan 14 03:40:41 2026 by
+  Generated on Wed Jan 14 19:32:00 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-2.7.8).
 </div>

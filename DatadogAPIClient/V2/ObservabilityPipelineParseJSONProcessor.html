@@ -99,7 +99,9 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb</dd>
+    <dd>lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb<span class="defines">,<br />
+  lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb</span>
+</dd>
   </dl>
   
 </div>
@@ -107,6 +109,8 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     <p>The <code>parse_json</code> processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.</p>
+
+<p><strong>Supported pipeline types:</strong> logs</p>
 
 
   </div>
@@ -195,7 +199,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Whether this processor is enabled.</p>
+    <span class="summary_desc"><div class='inline'><p>Indicates whether the processor is enabled.</p>
 </div></span>
   
 </li>
@@ -430,12 +434,12 @@
       <pre class="lines">
 
 
-25
-26
-27</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_display_name'>display_name</span>
   <span class='ivar'>@display_name</span>
@@ -458,7 +462,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Whether this processor is enabled.</p>
+    <p>Indicates whether the processor is enabled.</p>
 
 
   </div>
@@ -472,12 +476,12 @@
       <pre class="lines">
 
 
-28
-29
-30</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_parse_json_processor.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enabled'>enabled</span>
   <span class='ivar'>@enabled</span>
@@ -703,7 +707,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Jan 14 03:40:41 2026 by
+  Generated on Wed Jan 14 19:31:59 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-2.7.8).
 </div>

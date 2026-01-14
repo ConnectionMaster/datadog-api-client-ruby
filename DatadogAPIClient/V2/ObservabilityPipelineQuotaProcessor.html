@@ -99,14 +99,18 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb</dd>
+    <dd>lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb<span class="defines">,<br />
+  lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb</span>
+</dd>
   </dl>
   
 </div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>The Quota Processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.</p>
+    <p>The <code>quota</code> processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.</p>
+
+<p><strong>Supported pipeline types:</strong> logs</p>
 
 
   </div>
@@ -193,7 +197,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>If set to <code>true</code>, logs that matched the quota filter and sent after the quota has been met are dropped; only logs that did not match the filter query continue through the pipeline.</p>
+    <span class="summary_desc"><div class='inline'><p>If set to <code>true</code>, logs that match the quota filter and are sent after the quota is exceeded are dropped.</p>
 </div></span>
   
 </li>
@@ -221,7 +225,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Whether this processor is enabled.</p>
+    <span class="summary_desc"><div class='inline'><p>Indicates whether the processor is enabled.</p>
 </div></span>
   
 </li>
@@ -413,7 +417,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>The action to take when the quota is exceeded.</p>
+    <span class="summary_desc"><div class='inline'><p>The action to take when the quota or bucket limit is exceeded.</p>
 </div></span>
   
 </li>
@@ -466,6 +470,32 @@
 
   
     <span class="summary_desc"><div class='inline'><p>A list of fields used to segment log traffic for quota enforcement.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#too_many_buckets_action-instance_method" title="#too_many_buckets_action (instance method)">#<strong>too_many_buckets_action</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The action to take when the quota or bucket limit is exceeded.</p>
 </div></span>
   
 </li>
@@ -588,12 +618,12 @@
       <pre class="lines">
 
 
-25
-26
-27</pre>
+27
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_display_name'>display_name</span>
   <span class='ivar'>@display_name</span>
@@ -616,7 +646,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>If set to <code>true</code>, logs that matched the quota filter and sent after the quota has been met are dropped; only logs that did not match the filter query continue through the pipeline.</p>
+    <p>If set to <code>true</code>, logs that match the quota filter and are sent after the quota is exceeded are dropped. Logs that do not match the filter continue through the pipeline. <strong>Note</strong>: You can set either <code>drop_events</code> or <code>overflow_action</code>, but not both.</p>
 
 
   </div>
@@ -658,7 +688,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Whether this processor is enabled.</p>
+    <p>Indicates whether the processor is enabled.</p>
 
 
   </div>
@@ -672,12 +702,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_enabled'>enabled</span>
   <span class='ivar'>@enabled</span>
@@ -700,7 +730,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the <code>input</code> to downstream components).</p>
+    <p>The unique identifier for this component. Used in other parts of the pipeline to reference this component (for example, as the <code>input</code> to downstream components).</p>
 
 
   </div>
@@ -952,7 +982,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>The action to take when the quota is exceeded. Options:</p>
+    <p>The action to take when the quota or bucket limit is exceeded. Options:</p>
 
 <ul>
 <li><code>drop</code>: Drop the event.</li>
@@ -1072,6 +1102,54 @@
 </div>
     
       
+      <span id="too_many_buckets_action=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="too_many_buckets_action-instance_method">
+  
+    #<strong>too_many_buckets_action</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The action to take when the quota or bucket limit is exceeded. Options:</p>
+
+<ul>
+<li><code>drop</code>: Drop the event.</li>
+<li><code>no_action</code>: Let the event pass through.</li>
+<li><code>overflow_routing</code>: Route to an overflow destination.</li>
+</ul>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+66
+67
+68</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/datadog_api_client/v2/models/observability_pipeline_quota_processor.rb', line 66</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_too_many_buckets_action'>too_many_buckets_action</span>
+  <span class='ivar'>@too_many_buckets_action</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
       <span id="type=-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="type-instance_method">
@@ -1119,7 +1197,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Jan 14 03:40:40 2026 by
+  Generated on Wed Jan 14 19:31:58 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-2.7.8).
 </div>
