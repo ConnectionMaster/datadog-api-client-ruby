@@ -17,10 +17,11 @@ require 'date'
 require 'time'
 
 module DatadogAPIClient::V2
-  # Postmortem template resource type
+  # Postmortem template resource type.
   class PostmortemTemplateType
     include BaseEnumModel
 
+    POSTMORTEM_TEMPLATES = "postmortem_templates".freeze
     POSTMORTEM_TEMPLATE = "postmortem_template".freeze
   end
 end
